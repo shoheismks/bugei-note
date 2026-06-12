@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import "./App.css";
 
 import {
@@ -48,8 +48,34 @@ import Navigation from "./components/Navigation";
 import AchievementPopup from "./components/AchievementPopup";
 import Techniques from "./pages/Techniques";
 import Backup from "./pages/Backup";
+import Login from "./pages/Login";
+import { supabase } from "./lib/supabase";
 
 function App() {
+
+  useEffect(() => {
+  supabase.auth.getSession().then(({ data }) => {
+    setSession(data.session);
+    setAuthLoading(false);
+  });
+
+  const {
+    data: { subscription },
+  } = supabase.auth.onAuthStateChange(
+    (_event, session) => {
+      setSession(session);
+      setAuthLoading(false);
+    }
+  );
+
+  return () => {
+    subscription.unsubscribe();
+  };
+}, []);
+
+  const [session, setSession] = useState(null);
+  const [authLoading, setAuthLoading] = useState(true);
+
   const [tab, setTab] = useState("home");
 
   const [gender, setGender] = useState(
@@ -343,12 +369,43 @@ function App() {
     unlockedAchievements,
   });
 
+  if (authLoading) {
+  return (
+    <div className="app">
+      <main>
+        <section className="card hero">
+          <h2>読み込み中</h2>
+        </section>
+      </main>
+    </div>
+  );
+}
+
+if (!session) {
+  return (
+    <div className="app">
+      <Login />
+    </div>
+  );
+}
+
   return (
     <div className="app">
       <AchievementPopup achievement={newAchievement} />
 
       <Header />
 
+      <section className="card">
+        <button
+          className="danger"
+          onClick={async () => {
+            await supabase.auth.signOut();
+            window.location.reload();
+          }}
+        >
+          ログアウト
+        </button>
+      </section>
       <Navigation setTab={setTab} />
 
       {tab === "home" && (
