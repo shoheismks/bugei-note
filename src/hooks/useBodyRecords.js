@@ -18,6 +18,7 @@ export function useBodyRecords() {
   );
 
   const saveBodyRecord = async () => {
+    console.log("SAVE BODY CLICKED");
     if (!weight) return;
 
     const {
