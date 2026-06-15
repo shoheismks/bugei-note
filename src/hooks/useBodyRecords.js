@@ -18,7 +18,6 @@ export function useBodyRecords() {
   );
 
   const saveBodyRecord = async () => {
-    console.log("SAVE BODY CLICKED");
     if (!weight) return;
 
     const {
@@ -32,20 +31,14 @@ export function useBodyRecords() {
     };
 
     if (user) {
-      console.log("USER:", user);
-
-      const { data, error } = await supabase
+      const { error } = await supabase
         .from("body_records")
         .insert({
           user_id: user.id,
           date: newRecord.date,
           weight: Number(weight),
           body_fat: bodyFat ? Number(bodyFat) : null,
-        })
-        .select();
-
-      console.log("INSERT DATA:", data);
-      console.log("INSERT ERROR:", error);
+        });
 
       if (error) {
         alert(error.message);
