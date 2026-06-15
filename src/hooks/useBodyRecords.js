@@ -37,7 +37,7 @@ export function useBodyRecords() {
           user_id: user.id,
           date: newRecord.date,
           weight: Number(weight),
-          bodyFat: bodyFat ? Number(bodyFat) : null,
+          bodyFat: body_fat ? Number(bodyFat) : null,
         });
 
       if (error) {
