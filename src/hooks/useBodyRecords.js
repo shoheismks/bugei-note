@@ -31,14 +31,20 @@ export function useBodyRecords() {
     };
 
     if (user) {
-      const { error } = await supabase
+      console.log("USER:", user);
+
+      const { data, error } = await supabase
         .from("body_records")
         .insert({
           user_id: user.id,
           date: newRecord.date,
           weight: Number(weight),
-          bodyFat: body_fat ? Number(bodyFat) : null,
-        });
+          body_fat: bodyFat ? Number(bodyFat) : null,
+        })
+        .select();
+
+      console.log("INSERT DATA:", data);
+      console.log("INSERT ERROR:", error);
 
       if (error) {
         alert(error.message);
