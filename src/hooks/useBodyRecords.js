@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { supabase } from "../lib/supabase";
 
 export function useBodyRecords() {
@@ -16,6 +16,52 @@ export function useBodyRecords() {
   const [bodyRecords, setBodyRecords] = useState(
     JSON.parse(localStorage.getItem("bodyRecords") || "[]")
   );
+
+  useEffect(() => {
+    loadBodyRecords();
+  }, []);
+
+  const loadBodyRecords = async () => {
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (!user) return;
+
+    const { data, error } = await supabase
+      .from("body_records")
+      .select("*")
+      .eq("user_id", user.id)
+      .order("date", { ascending: false });
+
+    if (error) {
+      console.log(error.message);
+      return;
+    }
+
+    const formattedRecords = (data || []).map((record) => ({
+      id: record.id,
+      date: record.date,
+      weight: record.weight,
+      bodyFat: record.body_fat,
+    }));
+
+    setBodyRecords(formattedRecords);
+    localStorage.setItem(
+      "bodyRecords",
+      JSON.stringify(formattedRecords)
+    );
+
+    if (formattedRecords.length > 0) {
+      const latest = formattedRecords[0];
+
+      setSavedWeight(latest.weight || "未登録");
+      setSavedBodyFat(latest.bodyFat || "未登録");
+
+      localStorage.setItem("weight", latest.weight || "");
+      localStorage.setItem("bodyFat", latest.bodyFat || "");
+    }
+  };
 
   const saveBodyRecord = async () => {
     if (!weight) return;
