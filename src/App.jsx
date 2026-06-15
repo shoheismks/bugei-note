@@ -249,7 +249,7 @@ function App() {
   };
 
 
-  const saveTrainingRecord = () => {
+  const saveTrainingRecord = async () => {
     if (!exercise) return;
     if (isTimeBased && !reps) return;
     if (!isTimeBased && (!trainingWeight || !reps)) return;
@@ -276,7 +276,32 @@ function App() {
       xp: xpGain,
       rule: isDumbbell ? "片手重量" : isTimeBased ? "秒数" : "表示重量",
     };
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
+    if (user) {
+      const { error } = await supabase
+        .from("training_records")
+        .insert({
+          user_id: user.id,
+          date: newRecord.date,
+          category: newRecord.part,
+          exercise: newRecord.exercise,
+          weight: newRecord.weight
+            ? Number(newRecord.weight)
+            : null,
+          reps: newRecord.reps
+            ? Number(newRecord.reps)
+            : null,
+          memo: "",
+        });
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+    }
     const updated = [newRecord, ...trainingRecords];
 
     const afterScore = getPartBestScoreFromRecords(
