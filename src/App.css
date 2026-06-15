@@ -533,3 +533,93 @@ main {
   min-width: 1px !important;
   min-height: 1px !important;
 }
+
+/* ===== text overflow guard ===== */
+
+header h1 {
+  font-size: clamp(32px, 12vw, 72px);
+  line-height: 1.05;
+  letter-spacing: 0.06em;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+header p {
+  font-size: clamp(13px, 4vw, 20px);
+  line-height: 1.3;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+h1,
+h2,
+h3,
+p,
+strong,
+span {
+  max-width: 100%;
+  line-height: 1.3;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+.big-rank {
+  font-size: clamp(32px, 10vw, 48px);
+  line-height: 1.15;
+  white-space: normal;
+  overflow-wrap: anywhere;
+}
+
+.hero .big-rank,
+.card .big-rank {
+  max-width: 100%;
+}
+
+.card h2 {
+  font-size: clamp(20px, 6vw, 30px);
+  line-height: 1.25;
+}
+
+.card h3 {
+  font-size: clamp(17px, 5vw, 24px);
+  line-height: 1.25;
+}
+
+.card p {
+  font-size: clamp(14px, 4vw, 18px);
+}
+
+.hint {
+  font-size: clamp(12px, 3.4vw, 14px);
+  line-height: 1.4;
+}
+
+button,
+select,
+input,
+textarea {
+  max-width: 100%;
+}
+
+nav button {
+  white-space: normal;
+  line-height: 1.2;
+  overflow-wrap: anywhere;
+}
+
+/* mission / quest cards */
+.mission-title,
+.quest-title,
+.recommended-mission,
+.home-mission-title {
+  font-size: clamp(24px, 8vw, 40px);
+  line-height: 1.15;
+  white-space: normal;
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
+/* prevent huge single-line Japanese text */
+.card * {
+  min-width: 0;
+}
