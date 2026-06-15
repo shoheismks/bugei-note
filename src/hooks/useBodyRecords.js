@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { supabase } from "../lib/supabase";
 
 export function useBodyRecords() {
   const [weight, setWeight] = useState("");
@@ -13,17 +14,37 @@ export function useBodyRecords() {
   );
 
   const [bodyRecords, setBodyRecords] = useState(
-    JSON.parse(localStorage.getItem("bodyRecords")) || []
+    JSON.parse(localStorage.getItem("bodyRecords") || "[]")
   );
 
-  const saveBodyRecord = () => {
+  const saveBodyRecord = async () => {
     if (!weight) return;
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
 
     const newRecord = {
       date: new Date().toISOString(),
       weight,
       bodyFat,
     };
+
+    if (user) {
+      const { error } = await supabase
+        .from("body_records")
+        .insert({
+          user_id: user.id,
+          date: newRecord.date,
+          weight: Number(weight),
+          bodyFat: bodyFat ? Number(bodyFat) : null,
+        });
+
+      if (error) {
+        alert(error.message);
+        return;
+      }
+    }
 
     const updated = [newRecord, ...bodyRecords];
 
