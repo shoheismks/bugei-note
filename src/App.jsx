@@ -280,23 +280,31 @@ function App() {
     } = await supabase.auth.getUser();
 
     if (user) {
-      const { error } = await supabase
-        .from("training_records")
-        .insert({
-          user_id: user.id,
-          date: newRecord.date,
-          category: newRecord.part,
-          exercise: newRecord.exercise,
-          weight: newRecord.weight ? Number(newRecord.weight) : null,
-          reps: newRecord.reps ? Number(newRecord.reps) : null,
-          memo: "",
-        });
+  const payload = {
+    user_id: user.id,
+    date: newRecord.date,
+    category: newRecord.part,
+    exercise: newRecord.exercise,
+    weight: newRecord.weight ? Number(newRecord.weight) : null,
+    reps: newRecord.reps ? Number(newRecord.reps) : null,
+    memo: "",
+  };
 
-      if (error) {
-        alert(error.message);
-        return;
-      }
-    }
+  console.log("TRAINING PAYLOAD:", payload);
+
+  const { data, error } = await supabase
+    .from("training_records")
+    .insert(payload)
+    .select();
+
+  console.log("TRAINING DATA:", data);
+  console.log("TRAINING ERROR:", error);
+
+  if (error) {
+    alert(error.message);
+    return;
+  }
+}
 
     const updated = [newRecord, ...trainingRecords];
 
@@ -337,7 +345,7 @@ function App() {
     setReps("");
     setSets("");
   };
-  
+
   const resetAllData = () => {
     const result = window.confirm("すべての記録を削除しますか？");
 
