@@ -32,6 +32,7 @@ import Steps from "./pages/Steps";
 import { useStepRecords } from "./hooks/useStepRecords";
 import { useTechniques } from "./hooks/useTechniques";
 import { useTechniqueNotes } from "./hooks/useTechniqueNotes";
+import { useAuth } from "./hooks/useAuth";
 
 
 import Home from "./pages/Home";
@@ -54,29 +55,8 @@ import { supabase } from "./lib/supabase";
 
 function App() {
 
-  useEffect(() => {
-  supabase.auth.getSession().then(({ data }) => {
-    setSession(data.session);
-    setAuthLoading(false);
-  });
-
-  const {
-    data: { subscription },
-  } = supabase.auth.onAuthStateChange(
-    (_event, session) => {
-      setSession(session);
-      setAuthLoading(false);
-    }
-  );
-
-  return () => {
-    subscription.unsubscribe();
-  };
-}, []);
-
-  const [session, setSession] = useState(null);
-  const [authLoading, setAuthLoading] = useState(true);
-
+  const { session, authLoading } = useAuth();
+  
   const [tab, setTab] = useState("home");
 
   const [gender, setGender] = useState(
