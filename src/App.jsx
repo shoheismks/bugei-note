@@ -282,16 +282,18 @@ function App() {
     } = await supabase.auth.getUser();
 
     if (user) {
-  const payload = {
-    user_id: user.id,
-    date: newRecord.date,
-    category: newRecord.part,
-    exercise: newRecord.exercise,
-    weight: newRecord.weight ? Number(newRecord.weight) : null,
-    reps: newRecord.reps ? Number(newRecord.reps) : null,
-    memo: "",
-  };
-
+      const payload = {
+        user_id: user.id,
+        date: newRecord.date,
+        category: newRecord.part,
+        exercise: newRecord.exercise,
+        weight: newRecord.weight ? Number(newRecord.weight) : null,
+        reps: newRecord.reps ? Number(newRecord.reps) : null,
+        sets: newRecord.sets ? Number(newRecord.sets) : null,
+        xp: Number(newRecord.xp || 0),
+        rule: newRecord.rule,
+        memo: "",
+      };
   console.log("TRAINING PAYLOAD:", payload);
 
   const { data, error } = await supabase
