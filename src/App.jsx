@@ -248,6 +248,8 @@ function App() {
     );
   };
     const saveTrainingRecord = async () => {
+       alert("稽古保存ボタンは押されています");
+
     if (!exercise) return;
     if (isTimeBased && !reps) return;
     if (!isTimeBased && (!trainingWeight || !reps)) return;
