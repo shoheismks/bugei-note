@@ -294,7 +294,8 @@ function App() {
         rule: newRecord.rule,
         memo: "",
       };
-  console.log("TRAINING PAYLOAD:", payload);
+          
+      console.log("TRAINING PAYLOAD:", payload);
 
   const { data, error } = await supabase
     .from("training_records")
