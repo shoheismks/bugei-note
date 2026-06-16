@@ -35,24 +35,12 @@ import { useTechniqueNotes } from "./hooks/useTechniqueNotes";
 import { useAuth } from "./hooks/useAuth";
 import { useAppStats } from "./hooks/useAppStats";
 
-
-import Home from "./pages/Home";
-import Body from "./pages/Body";
-import Training from "./pages/Training";
-import Rank from "./pages/Rank";
-import Achievement from "./pages/Achievement";
-import MartialArts from "./pages/MartialArts";
-import BudoJournal from "./pages/BudoJournal";
-import Titles from "./pages/Titles";
-import Missions from "./pages/Missions";
-
 import Header from "./components/Header";
 import Navigation from "./components/Navigation";
 import AchievementPopup from "./components/AchievementPopup";
-import Techniques from "./pages/Techniques";
-import Backup from "./pages/Backup";
 import Login from "./pages/Login";
 import { supabase } from "./lib/supabase";
+import AppRoutes from "./components/AppRoutes";
 
 function App() {
 
@@ -309,148 +297,87 @@ if (!session) {
       </section>
       <Navigation setTab={setTab} />
 
-      {tab === "home" && (
-        <Home
-          overallScore={overallScore}
-          totalXp={totalXp + martialXp}
-          martialXp={martialXp}
-          martialRecords={martialRecords}
-          gender={gender}
-          weightClass={weightClass}
-          savedWeight={savedWeight}
-          savedBodyFat={savedBodyFat}
-          selectedTitle={selectedTitle}
-          changeTitle={changeTitle}
-          unlockedTitles={unlockedTitles}
-          saveGender={saveGender}
-          resetAllData={resetAllData}
-          trainingRecords={trainingRecords}
-          journalRecords={journalRecords}
-          bodyRecords={bodyRecords}
-          trainingStreak={trainingStreak}
-          combatPower={combatPower}
-          levelData={levelData}
-          playerClass={playerClass}
-          recommendedMission={recommendedMission}
-          stepRecords={stepRecords}
-          
-        />
-      )}
+      
 
-      {tab === "body" && (
-        <Body
-          weight={weight}
-          setWeight={setWeight}
-          bodyFat={bodyFat}
-          setBodyFat={setBodyFat}
-          bodyRecords={bodyRecords}
-          saveBodyRecord={saveBodyRecord}
-          deleteBodyRecord={deleteBodyRecord}
-        />
-      )}
+<AppRoutes
+  tab={tab}
+  overallScore={overallScore}
+  totalXp={totalXp}
+  martialXp={martialXp}
+  martialRecords={martialRecords}
+  gender={gender}
+  weightClass={weightClass}
+  savedWeight={savedWeight}
+  savedBodyFat={savedBodyFat}
+  selectedTitle={selectedTitle}
+  changeTitle={changeTitle}
+  unlockedTitles={unlockedTitles}
+  saveGender={saveGender}
+  resetAllData={resetAllData}
+  trainingRecords={trainingRecords}
+  journalRecords={journalRecords}
+  bodyRecords={bodyRecords}
+  trainingStreak={trainingStreak}
+  combatPower={combatPower}
+  levelData={levelData}
+  playerClass={playerClass}
+  recommendedMission={recommendedMission}
+  stepRecords={stepRecords}
+  weight={weight}
+  setWeight={setWeight}
+  bodyFat={bodyFat}
+  setBodyFat={setBodyFat}
+  saveBodyRecord={saveBodyRecord}
+  deleteBodyRecord={deleteBodyRecord}
+  trainingPart={trainingPart}
+  exercise={exercise}
+  trainingWeight={trainingWeight}
+  reps={reps}
+  sets={sets}
+  isTimeBased={isTimeBased}
+  isDumbbell={isDumbbell}
+  lastXp={lastXp}
+  rankUpMessage={rankUpMessage}
+  setExercise={setExercise}
+  setTrainingWeight={setTrainingWeight}
+  setReps={setReps}
+  setSets={setSets}
+  handlePartChange={handlePartChange}
+  handleSaveTrainingRecord={handleSaveTrainingRecord}
+  deleteTrainingRecord={deleteTrainingRecord}
+  getRecordScore={getRecordScore}
+  getPartBestScore={getPartBestScore}
+  getBestRecord={getBestRecord}
+  unlockedAchievements={unlockedAchievements}
+  martialArt={martialArt}
+  setMartialArt={setMartialArt}
+  martialMenu={martialMenu}
+  setMartialMenu={setMartialMenu}
+  martialCount={martialCount}
+  setMartialCount={setMartialCount}
+  saveMartialRecord={saveMartialRecord}
+  deleteMartialRecord={deleteMartialRecord}
+  journalText={journalText}
+  setJournalText={setJournalText}
+  journalSearch={journalSearch}
+  setJournalSearch={setJournalSearch}
+  saveJournalRecord={saveJournalRecord}
+  deleteJournalRecord={deleteJournalRecord}
+  steps={steps}
+  setSteps={setSteps}
+  saveStepRecord={saveStepRecord}
+  deleteStepRecord={deleteStepRecord}
+  getTechniqueLevel={getTechniqueLevel}
+  updateTechniqueLevel={updateTechniqueLevel}
+  learnedCount={learnedCount}
+  masteredCount={masteredCount}
+  getNote={getNote}
+  saveNote={saveNote}
 
-      {tab === "training" && (
-        <Training
-          trainingPart={trainingPart}
-          exercise={exercise}
-          trainingWeight={trainingWeight}
-          reps={reps}
-          sets={sets}
-          isTimeBased={isTimeBased}
-          isDumbbell={isDumbbell}
-          lastXp={lastXp}
-          rankUpMessage={rankUpMessage}
-          trainingRecords={trainingRecords}
-          setExercise={setExercise}
-          setTrainingWeight={setTrainingWeight}
-          setReps={setReps}
-          setSets={setSets}
-          handlePartChange={handlePartChange}
-          saveTrainingRecord={handleSaveTrainingRecord}
-          deleteTrainingRecord={deleteTrainingRecord}
-          getRecordScore={getRecordScore}
-        />
-      )}
+  
+/>
 
-      {tab === "rank" && (
-        <Rank
-          overallScore={overallScore}
-          totalXp={totalXp + martialXp}
-          weightClass={weightClass}
-          getPartBestScore={getPartBestScore}
-          getBestRecord={getBestRecord}
-          getRecordScore={getRecordScore}
-        />
-      )}
-
-      {tab === "achievement" && (
-        <Achievement unlockedAchievements={unlockedAchievements} />
-      )}
-
-      {tab === "martial" && (
-        <MartialArts
-          martialArt={martialArt}
-          setMartialArt={setMartialArt}
-          martialMenu={martialMenu}
-          setMartialMenu={setMartialMenu}
-          martialCount={martialCount}
-          setMartialCount={setMartialCount}
-          martialRecords={martialRecords}
-          saveMartialRecord={saveMartialRecord}
-          deleteMartialRecord={deleteMartialRecord}
-        />
-      )}
-
-      {tab === "journal" && (
-        <BudoJournal
-          journalText={journalText}
-          setJournalText={setJournalText}
-          journalSearch={journalSearch}
-          setJournalSearch={setJournalSearch}
-          journalRecords={journalRecords}
-          saveJournalRecord={saveJournalRecord}
-          deleteJournalRecord={deleteJournalRecord}
-        />
-      )}
-
-      {tab === "titles" && (
-        <Titles unlockedTitles={unlockedTitles} />
-      )}
-
-      {tab === "missions" && (
-        <Missions
-          trainingRecords={trainingRecords}
-          martialRecords={martialRecords}
-          journalRecords={journalRecords}
-          bodyRecords={bodyRecords}
-        />
-      )}
-
-      {tab === "steps" && (
-        <Steps
-          steps={steps}
-          setSteps={setSteps}
-          stepRecords={stepRecords}
-          saveStepRecord={saveStepRecord}
-          deleteStepRecord={deleteStepRecord}
-        />
-      )}
-
-      {tab === "techniques" && (
-        <Techniques
-          getTechniqueLevel={getTechniqueLevel}
-          updateTechniqueLevel={updateTechniqueLevel}
-          learnedCount={learnedCount}
-          masteredCount={masteredCount}
-          getNote={getNote}
-          saveNote={saveNote}
-        />
-      )}
-      {tab === "backup" && (
-        <Backup />
-      )}
-    </div>
-     );
+</div>
+);
 }
-
 export default App;
