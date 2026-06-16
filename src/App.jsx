@@ -34,6 +34,7 @@ import { useTechniques } from "./hooks/useTechniques";
 import { useTechniqueNotes } from "./hooks/useTechniqueNotes";
 import { useAuth } from "./hooks/useAuth";
 import { useAppStats } from "./hooks/useAppStats";
+import { useAchievements } from "./hooks/useAchievements";
 
 import Header from "./components/Header";
 import Navigation from "./components/Navigation";
@@ -184,21 +185,24 @@ function App() {
       getRecordScore,
     });
 
-  const checkAchievements = (records) => {
-    return getUnlockedAchievementsFromRecords(
-      records,
-      (targetRecords) =>
-        getOverallScoreFromRecords(targetRecords, getRecordScore),
-      (targetRecords, part) =>
-        getPartBestScoreFromRecords(targetRecords, part, getRecordScore),
-      trainingStreak,
-      stepRecords,
-      learnedCount,
-      masteredCount,
-      techniqueLevels
-    );
-  };
-   const handleSaveTrainingRecord = () => {
+    const {
+  checkAchievements,
+  totalXp,
+  unlockedAchievements,
+  unlockedTitles,
+} = useAchievements({
+  trainingRecords,
+  getRecordScore,
+  trainingStreak,
+  stepRecords,
+  learnedCount,
+  masteredCount,
+  techniqueLevels,
+  overallScore,
+  martialXp,
+});
+
+    const handleSaveTrainingRecord = () => {
   saveTrainingRecord({
     isTimeBased,
     isDumbbell,
@@ -241,22 +245,12 @@ function App() {
     setRankUpMessage(null);
   };
 
-  const totalXp = getTotalXp(trainingRecords);
-
   const {
   getNote,
   saveNote,
   } = useTechniqueNotes();
 
   const weightClass = getWeightClass(gender, savedWeight);
-  const unlockedAchievements = checkAchievements(trainingRecords);
-
-  const unlockedTitles = getUnlockedTitles({
-    overallScore,
-    totalXp: totalXp + martialXp,
-    martialXp,
-    unlockedAchievements,
-  });
 
   if (authLoading) {
   return (
