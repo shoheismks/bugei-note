@@ -247,109 +247,17 @@ function App() {
       techniqueLevels
     );
   };
-    const saveTrainingRecord = async () => {
-       alert("稽古保存ボタンは押されています");
-
-    if (!exercise) return;
-    if (isTimeBased && !reps) return;
-    if (!isTimeBased && (!trainingWeight || !reps)) return;
-
-    const beforeUnlocked = checkAchievements(trainingRecords);
-    const beforeIds = beforeUnlocked.map((item) => item.id);
-
-    const beforeScore = getPartBestScore(trainingPart);
-
-    const xpGain = calculateXpGain({
-      isTimeBased,
-      reps,
-      trainingWeight,
-      sets,
-    });
-
-    const newRecord = {
-      date: new Date().toISOString(),
-      part: trainingPart,
-      exercise,
-      weight: isTimeBased ? "" : trainingWeight,
-      reps,
-      sets: isTimeBased ? "" : sets,
-      xp: xpGain,
-      rule: isDumbbell ? "片手重量" : isTimeBased ? "秒数" : "表示重量",
-    };
-
-    const {
-      data: { user },
-    } = await supabase.auth.getUser();
-
-    if (user) {
-      const payload = {
-        user_id: user.id,
-        date: newRecord.date,
-        category: newRecord.part,
-        exercise: newRecord.exercise,
-        weight: newRecord.weight ? Number(newRecord.weight) : null,
-        reps: newRecord.reps ? Number(newRecord.reps) : null,
-        sets: newRecord.sets ? Number(newRecord.sets) : null,
-        xp: Number(newRecord.xp || 0),
-        rule: newRecord.rule,
-        memo: "",
-      };
-          
-      console.log("TRAINING PAYLOAD:", payload);
-
-  const { data, error } = await supabase
-    .from("training_records")
-    .insert(payload)
-    .select();
-
-  console.log("TRAINING DATA:", data);
-  console.log("TRAINING ERROR:", error);
-
-  if (error) {
-    alert(error.message);
-    return;
-  }
-}
-
-    const updated = [newRecord, ...trainingRecords];
-
-    const afterScore = getPartBestScoreFromRecords(
-      updated,
-      trainingPart,
-      getRecordScore
-    );
-
-    const afterUnlocked = checkAchievements(updated);
-    const newlyUnlocked = afterUnlocked.find(
-      (item) => !beforeIds.includes(item.id)
-    );
-
-    setTrainingRecords(updated);
-    localStorage.setItem("trainingRecords", JSON.stringify(updated));
-
-    setLastXp({
-      xp: xpGain,
-      exercise,
-    });
-
-    setRankUpMessage({
-      part: trainingPart,
-      beforeScore,
-      afterScore,
-    });
-
-    if (newlyUnlocked) {
-      setNewAchievement(newlyUnlocked);
-
-      setTimeout(() => {
-        setNewAchievement(null);
-      }, 3500);
-    }
-
-    setTrainingWeight("");
-    setReps("");
-    setSets("");
-  };
+   const handleSaveTrainingRecord = () => {
+  saveTrainingRecord({
+    isTimeBased,
+    isDumbbell,
+    checkAchievements,
+    getPartBestScore,
+    setLastXp,
+    setRankUpMessage,
+    setNewAchievement,
+  });
+};
 
   const resetAllData = () => {
     const result = window.confirm("すべての記録を削除しますか？");
@@ -500,7 +408,7 @@ if (!session) {
           setReps={setReps}
           setSets={setSets}
           handlePartChange={handlePartChange}
-          saveTrainingRecord={saveTrainingRecord}
+          saveTrainingRecord={handleSaveTrainingRecord}
           deleteTrainingRecord={deleteTrainingRecord}
           getRecordScore={getRecordScore}
         />
