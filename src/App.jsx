@@ -33,6 +33,7 @@ import { useStepRecords } from "./hooks/useStepRecords";
 import { useTechniques } from "./hooks/useTechniques";
 import { useTechniqueNotes } from "./hooks/useTechniqueNotes";
 import { useAuth } from "./hooks/useAuth";
+import { useAppStats } from "./hooks/useAppStats";
 
 
 import Home from "./pages/Home";
@@ -56,7 +57,7 @@ import { supabase } from "./lib/supabase";
 function App() {
 
   const { session, authLoading } = useAuth();
-  
+
   const [tab, setTab] = useState("home");
 
   const [gender, setGender] = useState(
@@ -157,18 +158,7 @@ function App() {
     });
   };
 
-  const getOverallScore = () => {
-    return getOverallScoreFromRecords(trainingRecords, getRecordScore);
-  };
-
-  const trainingStreak = getTrainingStreak({
-    trainingRecords,
-    martialRecords,
-    journalRecords,
-    bodyRecords,
-  });
-
-  const {
+   const {
     steps,
     setSteps,
     stepRecords,
@@ -188,30 +178,23 @@ function App() {
   } = useTechniques();
 
   const techniquePower = getTechniquePower();
-
-  const combatPower = getCombatPower({
-    overallScore: getOverallScore(),
-    martialXp: martialRecords.reduce(
-      (sum, record) => sum + Number(record.xp || 0),
-      0
-    ),
-    trainingStreak,
-    journalRecords,
-    bodyRecords,
-    stepRecords,
-    techniquePower,
-  });
-  const levelData =
-  getLevelFromCombatPower(combatPower);
-
-  const recommendedMission = getRecommendedMission({
-  trainingRecords,
-  martialRecords,
-  journalRecords,
-  bodyRecords,
-  });
-
-  const playerClass = getClassFromLevel(levelData.level);
+    const {
+      overallScore,
+      martialXp,
+      trainingStreak,
+      combatPower,
+      levelData,
+      recommendedMission,
+      playerClass,
+    } = useAppStats({
+      trainingRecords,
+      martialRecords,
+      journalRecords,
+      bodyRecords,
+      stepRecords,
+      techniquePower,
+      getRecordScore,
+    });
 
   const checkAchievements = (records) => {
     return getUnlockedAchievementsFromRecords(
@@ -270,12 +253,7 @@ function App() {
     setRankUpMessage(null);
   };
 
-  const overallScore = getOverallScore();
   const totalXp = getTotalXp(trainingRecords);
-
-  const martialXp = martialRecords.reduce((sum, record) => {
-    return sum + Number(record.xp || 0);
-  }, 0);
 
   const {
   getNote,
