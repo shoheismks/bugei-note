@@ -247,9 +247,7 @@ function App() {
       techniqueLevels
     );
   };
-
-
-  const saveTrainingRecord = async () => {
+    const saveTrainingRecord = async () => {
     if (!exercise) return;
     if (isTimeBased && !reps) return;
     if (!isTimeBased && (!trainingWeight || !reps)) return;
@@ -270,12 +268,13 @@ function App() {
       date: new Date().toISOString(),
       part: trainingPart,
       exercise,
-      weight: trainingWeight,
+      weight: isTimeBased ? "" : trainingWeight,
       reps,
       sets: isTimeBased ? "" : sets,
       xp: xpGain,
       rule: isDumbbell ? "片手重量" : isTimeBased ? "秒数" : "表示重量",
     };
+
     const {
       data: { user },
     } = await supabase.auth.getUser();
@@ -288,12 +287,8 @@ function App() {
           date: newRecord.date,
           category: newRecord.part,
           exercise: newRecord.exercise,
-          weight: newRecord.weight
-            ? Number(newRecord.weight)
-            : null,
-          reps: newRecord.reps
-            ? Number(newRecord.reps)
-            : null,
+          weight: newRecord.weight ? Number(newRecord.weight) : null,
+          reps: newRecord.reps ? Number(newRecord.reps) : null,
           memo: "",
         });
 
@@ -302,6 +297,7 @@ function App() {
         return;
       }
     }
+
     const updated = [newRecord, ...trainingRecords];
 
     const afterScore = getPartBestScoreFromRecords(
@@ -341,7 +337,7 @@ function App() {
     setReps("");
     setSets("");
   };
-
+  
   const resetAllData = () => {
     const result = window.confirm("すべての記録を削除しますか？");
 
