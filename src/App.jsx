@@ -42,10 +42,12 @@ import AchievementPopup from "./components/AchievementPopup";
 import Login from "./pages/Login";
 import { supabase } from "./lib/supabase";
 import AppRoutes from "./components/AppRoutes";
+import { useProfile } from "./hooks/useProfile";
 
 function App() {
 
   const { session, authLoading } = useAuth();
+  const { profile, saveProfile } = useProfile();
 
   const [tab, setTab] = useState("home");
 
@@ -367,6 +369,8 @@ if (!session) {
   masteredCount={masteredCount}
   getNote={getNote}
   saveNote={saveNote}
+  profile={profile}
+  saveProfile={saveProfile}
 
   
 />

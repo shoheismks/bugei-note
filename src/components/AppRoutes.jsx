@@ -10,6 +10,7 @@ import Missions from "../pages/Missions";
 import Steps from "../pages/Steps";
 import Techniques from "../pages/Techniques";
 import Backup from "../pages/Backup";
+import Profile from "../pages/Profile";
 
 function AppRoutes(props) {
   const { tab } = props;
@@ -69,7 +70,11 @@ function AppRoutes(props) {
   }
 
   if (tab === "achievement") {
-    return <Achievement unlockedAchievements={props.unlockedAchievements} />;
+    return (
+      <Achievement
+        unlockedAchievements={props.unlockedAchievements}
+      />
+    );
   }
 
   if (tab === "martial") {
@@ -142,7 +147,18 @@ function AppRoutes(props) {
     );
   }
 
-  if (tab === "backup") return <Backup />;
+  if (tab === "profile") {
+    return (
+      <Profile
+        profile={props.profile}
+        saveProfile={props.saveProfile}
+      />
+    );
+  }
+
+  if (tab === "backup") {
+    return <Backup />;
+  }
 
   return null;
 }

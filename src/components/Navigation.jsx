@@ -2,6 +2,7 @@ function Navigation({ setTab }) {
   return (
     <nav>
       <button onClick={() => setTab("home")}>ホーム</button>
+      <button onClick={() => setTab("profile")}>プロフィール</button>
       <button onClick={() => setTab("body")}>身体</button>
       <button onClick={() => setTab("training")}>稽古</button>
       <button onClick={() => setTab("rank")}>段位</button>
