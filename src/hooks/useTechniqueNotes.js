@@ -3,9 +3,7 @@ import { supabase } from "../lib/supabase";
 
 export function useTechniqueNotes() {
   const [notes, setNotes] = useState(() => {
-    return JSON.parse(
-      localStorage.getItem("techniqueNotes") || "{}"
-    );
+    return JSON.parse(localStorage.getItem("techniqueNotes") || "{}");
   });
 
   useEffect(() => {
@@ -25,7 +23,7 @@ export function useTechniqueNotes() {
       .eq("user_id", user.id);
 
     if (error) {
-      console.log(error.message);
+      console.log("LOAD NOTE ERROR:", error);
       return;
     }
 
@@ -41,11 +39,7 @@ export function useTechniqueNotes() {
     });
 
     setNotes(loadedNotes);
-
-    localStorage.setItem(
-      "techniqueNotes",
-      JSON.stringify(loadedNotes)
-    );
+    localStorage.setItem("techniqueNotes", JSON.stringify(loadedNotes));
   };
 
   const getNote = (id) => {
@@ -60,23 +54,33 @@ export function useTechniqueNotes() {
   };
 
   const saveNote = async (id, data) => {
+    console.log("SAVE NOTE:", id, data);
+
+    const safeData = {
+      point: data?.point || "",
+      mistake: data?.mistake || "",
+      teaching: data?.teaching || "",
+      insight: data?.insight || "",
+    };
+
     const updated = {
       ...notes,
-      [id]: data,
+      [id]: safeData,
     };
 
     setNotes(updated);
-
-    localStorage.setItem(
-      "techniqueNotes",
-      JSON.stringify(updated)
-    );
+    localStorage.setItem("techniqueNotes", JSON.stringify(updated));
 
     const {
       data: { user },
     } = await supabase.auth.getUser();
 
-    if (!user) return;
+    console.log("NOTE USER:", user);
+
+    if (!user) {
+      alert("ログイン情報が取得できませんでした");
+      return;
+    }
 
     const { data: existing, error: selectError } = await supabase
       .from("technique_notes")
@@ -85,41 +89,45 @@ export function useTechniqueNotes() {
       .eq("technique_id", id)
       .maybeSingle();
 
+    console.log("NOTE EXISTING:", existing);
+    console.log("NOTE SELECT ERROR:", selectError);
+
     if (selectError) {
       alert(selectError.message);
       return;
     }
 
-    const payload = {
-      point: data.point || "",
-      mistake: data.mistake || "",
-      teaching: data.teaching || "",
-      insight: data.insight || "",
-    };
-
     if (existing) {
-      const { error } = await supabase
+      const { data: updateData, error: updateError } = await supabase
         .from("technique_notes")
-        .update(payload)
-        .eq("id", existing.id);
+        .update(safeData)
+        .eq("id", existing.id)
+        .select();
 
-      if (error) {
-        alert(error.message);
+      console.log("NOTE UPDATE DATA:", updateData);
+      console.log("NOTE UPDATE ERROR:", updateError);
+
+      if (updateError) {
+        alert(updateError.message);
       }
 
       return;
     }
 
-    const { error } = await supabase
+    const { data: insertData, error: insertError } = await supabase
       .from("technique_notes")
       .insert({
         user_id: user.id,
         technique_id: id,
-        ...payload,
-      });
+        ...safeData,
+      })
+      .select();
 
-    if (error) {
-      alert(error.message);
+    console.log("NOTE INSERT DATA:", insertData);
+    console.log("NOTE INSERT ERROR:", insertError);
+
+    if (insertError) {
+      alert(insertError.message);
     }
   };
 
