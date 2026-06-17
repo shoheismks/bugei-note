@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { techniques } from "../data/techniques";
 
 const levelLabels = [
@@ -19,6 +19,13 @@ function Techniques({
   const [selectedTechnique, setSelectedTechnique] = useState(null);
   const [searchWord, setSearchWord] = useState("");
 
+  const [noteDraft, setNoteDraft] = useState({
+    point: "",
+    mistake: "",
+    teaching: "",
+    insight: "",
+  });
+
   const groups = {
     居合: techniques.filter((t) => t.art === "居合"),
     剣術: techniques.filter((t) => t.art === "剣術"),
@@ -26,9 +33,11 @@ function Techniques({
     杖術: techniques.filter((t) => t.art === "杖術"),
   };
 
-  const selectedNote = selectedTechnique
-    ? getNote(selectedTechnique.id)
-    : null;
+  useEffect(() => {
+    if (!selectedTechnique) return;
+
+    setNoteDraft(getNote(selectedTechnique.id));
+  }, [selectedTechnique]);
 
   const totalCount = techniques.length;
 
@@ -109,6 +118,13 @@ function Techniques({
     return targetText.includes(searchWord.toLowerCase());
   };
 
+  const saveSelectedNote = async () => {
+    if (!selectedTechnique) return;
+
+    await saveNote(selectedTechnique.id, noteDraft);
+    alert("メモを保存しました");
+  };
+
   return (
     <main>
       <section className="card hero">
@@ -184,7 +200,9 @@ function Techniques({
 
         return (
           <section className="card" key={art}>
-            <h2>{art} {artPercent}%</h2>
+            <h2>
+              {art} {artPercent}%
+            </h2>
 
             <div className="xp-bar">
               <div
@@ -205,7 +223,7 @@ function Techniques({
                   key={technique.id}
                   style={{
                     padding: "10px 0",
-                    borderBottom: "1px solid #eee",
+                    borderBottom: "1px solid #333",
                   }}
                 >
                   <strong
@@ -244,10 +262,10 @@ function Techniques({
 
           <textarea
             placeholder="ポイント"
-            value={selectedNote.point}
+            value={noteDraft.point}
             onChange={(e) =>
-              saveNote(selectedTechnique.id, {
-                ...selectedNote,
+              setNoteDraft({
+                ...noteDraft,
                 point: e.target.value,
               })
             }
@@ -255,10 +273,10 @@ function Techniques({
 
           <textarea
             placeholder="失敗例"
-            value={selectedNote.mistake}
+            value={noteDraft.mistake}
             onChange={(e) =>
-              saveNote(selectedTechnique.id, {
-                ...selectedNote,
+              setNoteDraft({
+                ...noteDraft,
                 mistake: e.target.value,
               })
             }
@@ -266,10 +284,10 @@ function Techniques({
 
           <textarea
             placeholder="指導法"
-            value={selectedNote.teaching}
+            value={noteDraft.teaching}
             onChange={(e) =>
-              saveNote(selectedTechnique.id, {
-                ...selectedNote,
+              setNoteDraft({
+                ...noteDraft,
                 teaching: e.target.value,
               })
             }
@@ -277,14 +295,18 @@ function Techniques({
 
           <textarea
             placeholder="気づき"
-            value={selectedNote.insight}
+            value={noteDraft.insight}
             onChange={(e) =>
-              saveNote(selectedTechnique.id, {
-                ...selectedNote,
+              setNoteDraft({
+                ...noteDraft,
                 insight: e.target.value,
               })
             }
           />
+
+          <button className="primary" onClick={saveSelectedNote}>
+            メモを保存
+          </button>
 
           <button onClick={() => setSelectedTechnique(null)}>
             閉じる
