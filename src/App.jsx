@@ -78,6 +78,7 @@ function App() {
     setExercise,
     trainingWeight,
     setTrainingWeight,
+    saveTrainingRecord,
     reps,
     setReps,
     sets,
