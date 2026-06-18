@@ -22,22 +22,13 @@ export async function updateRanking({
     updated_at: new Date().toISOString(),
   };
 
-  const { data: existing } = await supabase
+  const { error } = await supabase
     .from("ranking_profiles")
-    .select("id")
-    .eq("user_id", user.id)
-    .maybeSingle();
+    .upsert(payload, {
+      onConflict: "user_id",
+    });
 
-  if (existing) {
-    await supabase
-      .from("ranking_profiles")
-      .update(payload)
-      .eq("id", existing.id);
-
-    return;
+  if (error) {
+    console.log("RANKING ERROR:", error.message);
   }
-
-  await supabase
-    .from("ranking_profiles")
-    .insert(payload);
 }
