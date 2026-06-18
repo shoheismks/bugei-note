@@ -4,6 +4,7 @@ import { supabase } from "../lib/supabase";
 function Ranking() {
   const [rankings, setRankings] = useState([]);
   const [myUserId, setMyUserId] = useState(null);
+  const [rivalIds, setRivalIds] = useState([]);
 
   useEffect(() => {
     loadRankings();
@@ -14,7 +15,8 @@ function Ranking() {
       data: { user },
     } = await supabase.auth.getUser();
 
-    setMyUserId(user?.id || null);
+    const currentUserId = user?.id || null;
+    setMyUserId(currentUserId);
 
     const { data, error } = await supabase
       .from("ranking_profiles")
@@ -27,6 +29,41 @@ function Ranking() {
     }
 
     setRankings(data || []);
+
+    if (!currentUserId) return;
+
+    const { data: rivalsData, error: rivalsError } = await supabase
+      .from("rivals")
+      .select("rival_user_id")
+      .eq("user_id", currentUserId);
+
+    if (rivalsError) {
+      console.log(rivalsError.message);
+      return;
+    }
+
+    setRivalIds(
+      (rivalsData || []).map((item) => item.rival_user_id)
+    );
+  };
+
+  const addRival = async (rivalUserId) => {
+    if (!myUserId) return;
+    if (myUserId === rivalUserId) return;
+    if (rivalIds.includes(rivalUserId)) return;
+
+    const { error } = await supabase.from("rivals").insert({
+      user_id: myUserId,
+      rival_user_id: rivalUserId,
+    });
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    setRivalIds([...rivalIds, rivalUserId]);
+    alert("ライバルに登録しました");
   };
 
   const getMedal = (index) => {
@@ -65,15 +102,11 @@ function Ranking() {
         </p>
 
         {myRanking && powerGap > 0 && (
-          <p className="hint">
-            1位との差：戦闘力 {powerGap}
-          </p>
+          <p className="hint">1位との差：戦闘力 {powerGap}</p>
         )}
 
         {myRanking && powerGap === 0 && (
-          <p className="hint">
-            現在トップ。道場破り待ち。
-          </p>
+          <p className="hint">現在トップ。道場破り待ち。</p>
         )}
       </section>
 
@@ -86,6 +119,7 @@ function Ranking() {
 
         {rankings.map((player, index) => {
           const isMe = player.user_id === myUserId;
+          const isRival = rivalIds.includes(player.user_id);
 
           return (
             <div
@@ -101,9 +135,7 @@ function Ranking() {
               </h3>
 
               <p>{player.title}</p>
-
               <p>戦闘力：{player.combat_power ?? 0}</p>
-
               <p>総XP：{player.total_xp ?? 0}</p>
 
               <p>
@@ -117,6 +149,16 @@ function Ranking() {
                   {Number(rankings[0]?.combat_power || 0) -
                     Number(player.combat_power || 0)}
                 </p>
+              )}
+
+              {!isMe && (
+                <button
+                  className="primary"
+                  disabled={isRival}
+                  onClick={() => addRival(player.user_id)}
+                >
+                  {isRival ? "ライバル登録済み" : "ライバル登録"}
+                </button>
               )}
             </div>
           );
