@@ -45,23 +45,6 @@ import AppRoutes from "./components/AppRoutes";
 import { useProfile } from "./hooks/useProfile";
 import { updateRanking } from "./hooks/useRanking";
 
-useEffect(() => {
-  if (!profile) return;
-
-  updateRanking({
-    profile,
-    combatPower,
-    totalXp: totalXp + martialXp,
-    overallScore,
-  });
-}, [
-  profile,
-  combatPower,
-  totalXp,
-  martialXp,
-  overallScore,
-]);
-
 function App() {
 
   const { session, authLoading } = useAuth();
@@ -72,7 +55,7 @@ function App() {
   const [gender, setGender] = useState(
     localStorage.getItem("gender") || "male"
   );
-
+ 
   const {
     weight,
     setWeight,
@@ -265,12 +248,31 @@ function App() {
     setRankUpMessage(null);
   };
 
+  
+
   const {
   getNote,
   saveNote,
   } = useTechniqueNotes();
 
   const weightClass = getWeightClass(gender, savedWeight);
+
+  useEffect(() => {
+  if (!profile) return;
+
+  updateRanking({
+    profile,
+    combatPower,
+    totalXp: totalXp + martialXp,
+    overallScore,
+  });
+}, [
+  profile,
+  combatPower,
+  totalXp,
+  martialXp,
+  overallScore,
+]);
 
   if (authLoading) {
   return (
