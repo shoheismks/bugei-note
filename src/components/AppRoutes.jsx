@@ -11,6 +11,7 @@ import Steps from "../pages/Steps";
 import Techniques from "../pages/Techniques";
 import Backup from "../pages/Backup";
 import Profile from "../pages/Profile";
+import Ranking from "../pages/Ranking";
 
 function AppRoutes(props) {
   const { tab } = props;
@@ -154,6 +155,10 @@ function AppRoutes(props) {
         saveProfile={props.saveProfile}
       />
     );
+  }
+
+  if (tab === "ranking") {
+    return <Ranking />;
   }
 
   if (tab === "backup") {
