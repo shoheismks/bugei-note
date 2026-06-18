@@ -43,6 +43,24 @@ import Login from "./pages/Login";
 import { supabase } from "./lib/supabase";
 import AppRoutes from "./components/AppRoutes";
 import { useProfile } from "./hooks/useProfile";
+import { updateRanking } from "./hooks/useRanking";
+
+useEffect(() => {
+  if (!profile) return;
+
+  updateRanking({
+    profile,
+    combatPower,
+    totalXp: totalXp + martialXp,
+    overallScore,
+  });
+}, [
+  profile,
+  combatPower,
+  totalXp,
+  martialXp,
+  overallScore,
+]);
 
 function App() {
 
