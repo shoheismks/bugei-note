@@ -1,3 +1,4 @@
+import { useState } from "react";
 import { parts, exercisesByPart, timeBasedExercises } from "../data";
 import { scoreToRank, scoreToSamuraiTitle } from "../rank";
 
@@ -21,6 +22,9 @@ function Training({
   deleteTrainingRecord,
   getRecordScore,
 }) {
+  const [customExercise, setCustomExercise] = useState("");
+  const [customType, setCustomType] = useState("strength");
+
   const beforeRank = rankUpMessage
     ? scoreToRank(rankUpMessage.beforeScore)
     : null;
@@ -37,10 +41,21 @@ function Training({
     ? scoreToSamuraiTitle(rankUpMessage.afterScore)
     : null;
 
+  const isCustom = exercise === "自由入力";
+
   const isRankUp =
     rankUpMessage &&
     beforeRank !== afterRank &&
     beforeRank !== "未記録";
+
+  const handleSave = () => {
+    saveTrainingRecord({
+      customExercise,
+      customType,
+    });
+
+    setCustomExercise("");
+  };
 
   return (
     <main>
@@ -80,11 +95,37 @@ function Training({
           ))}
         </select>
 
-        <select value={exercise} onChange={(e) => setExercise(e.target.value)}>
+        <select
+          value={exercise}
+          onChange={(e) => setExercise(e.target.value)}
+        >
           {exercisesByPart[trainingPart].map((item) => (
             <option key={item}>{item}</option>
           ))}
+          <option value="自由入力">自由入力</option>
         </select>
+
+        {isCustom && (
+          <>
+            <input
+              type="text"
+              placeholder="自由種目名 例：石担ぎ、薪割り、坂道走"
+              value={customExercise}
+              onChange={(e) => setCustomExercise(e.target.value)}
+            />
+
+            <select
+              value={customType}
+              onChange={(e) => setCustomType(e.target.value)}
+            >
+              <option value="strength">筋力</option>
+              <option value="cardio">有酸素</option>
+              <option value="budo">武道補強</option>
+              <option value="time">時間</option>
+              <option value="reps">回数</option>
+            </select>
+          </>
+        )}
 
         {!isTimeBased && (
           <input
@@ -97,12 +138,16 @@ function Training({
 
         <input
           type="number"
-          placeholder={isTimeBased ? "秒数" : "回数"}
+          placeholder={
+            isTimeBased || customType === "time" || customType === "cardio"
+              ? "時間・回数・秒数"
+              : "回数"
+          }
           value={reps}
           onChange={(e) => setReps(e.target.value)}
         />
 
-        {!isTimeBased && (
+        {!isTimeBased && customType !== "time" && customType !== "cardio" && (
           <input
             type="number"
             placeholder="セット数"
@@ -112,14 +157,16 @@ function Training({
         )}
 
         <p className="hint">
-          {isDumbbell && "ダンベル種目は片手重量で入力"}
-          {isTimeBased && "プランク・デッドハングは秒数で入力"}
-          {!isDumbbell &&
+          {isCustom && "自由種目はタイプに応じてXP計算します"}
+          {!isCustom && isDumbbell && "ダンベル種目は片手重量で入力"}
+          {!isCustom && isTimeBased && "時間・回数・秒数で入力"}
+          {!isCustom &&
+            !isDumbbell &&
             !isTimeBased &&
             "マシン・バーベルは表示重量で入力"}
         </p>
 
-        <button className="primary" onClick={saveTrainingRecord}>
+        <button className="primary" onClick={handleSave}>
           稽古記録を保存
         </button>
       </section>
@@ -139,8 +186,12 @@ function Training({
           </p>
 
           <p>
-            {timeBasedExercises.includes(record.exercise)
-              ? `${record.reps}秒`
+            {timeBasedExercises.includes(record.exercise) ||
+            record.rule === "自由入力：有酸素" ||
+            record.rule === "自由入力：時間" ||
+            record.rule === "自由入力：回数" ||
+            record.rule === "自由入力：武道補強"
+              ? `${record.reps}`
               : `${record.weight}kg × ${record.reps}回 × ${
                   record.sets || "-"
                 }セット`}

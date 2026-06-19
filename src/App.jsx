@@ -44,6 +44,7 @@ import { supabase } from "./lib/supabase";
 import AppRoutes from "./components/AppRoutes";
 import { useProfile } from "./hooks/useProfile";
 import { updateRanking } from "./hooks/useRanking";
+import Rivals from "../pages/Rivals";
 
 function App() {
 
@@ -206,7 +207,7 @@ function App() {
   martialXp,
 });
 
-    const handleSaveTrainingRecord = () => {
+    const handleSaveTrainingRecord = (options = {}) => {
   saveTrainingRecord({
     isTimeBased,
     isDumbbell,
@@ -215,6 +216,7 @@ function App() {
     setLastXp,
     setRankUpMessage,
     setNewAchievement,
+    ...options,
   });
 };
 
