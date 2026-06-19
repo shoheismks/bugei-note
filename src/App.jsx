@@ -44,7 +44,7 @@ import { supabase } from "./lib/supabase";
 import AppRoutes from "./components/AppRoutes";
 import { useProfile } from "./hooks/useProfile";
 import { updateRanking } from "./hooks/useRanking";
-import Rivals from "../pages/Rivals";
+
 
 function App() {
 
