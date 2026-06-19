@@ -12,6 +12,7 @@ import Techniques from "../pages/Techniques";
 import Backup from "../pages/Backup";
 import Profile from "../pages/Profile";
 import Ranking from "../pages/Ranking";
+import Rivals from "../pages/Rivals";
 
 function AppRoutes(props) {
   const { tab } = props;
@@ -160,6 +161,10 @@ function AppRoutes(props) {
   if (tab === "ranking") {
     return <Ranking />;
   }
+
+  if (tab === "rivals") {
+  return <Rivals />;
+}
 
   if (tab === "backup") {
     return <Backup />;
