@@ -64,6 +64,8 @@ function AppRoutes(props) {
         overallScore={props.overallScore}
         totalXp={props.totalXp + props.martialXp}
         weightClass={props.weightClass}
+        trainingRecords={props.trainingRecords}
+        martialRecords={props.martialRecords}
         getPartBestScore={props.getPartBestScore}
         getBestRecord={props.getBestRecord}
         getRecordScore={props.getRecordScore}

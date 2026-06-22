@@ -598,15 +598,19 @@ button:focus-visible {
 }
 
 .logout-card {
-  width: auto;
-  max-width: none;
-  margin: 0 16px 16px;
+  align-self: center;
+  width: calc(100% - 32px);
+  max-width: 448px;
+  margin: 0 auto 16px;
   padding: 12px;
   background: rgba(15, 23, 42, 0.5);
 }
 
 .logout-card .danger {
-  margin-top: 0;
+  display: block;
+  width: 100%;
+  margin: 0 !important;
+  text-align: center;
 }
 
 .report-card {
@@ -640,9 +644,9 @@ button:focus-visible {
   text-transform: uppercase;
 }
 
-.report-print-button {
+.report-export-button {
   width: auto;
-  min-width: 76px;
+  min-width: 112px;
   min-height: 38px;
   padding: 9px 14px;
 }
@@ -989,7 +993,7 @@ span {
   header,
   nav,
   .logout-card,
-  .report-print-button,
+  .report-export-button,
   main > .card:not(.report-card) {
     display: none !important;
   }
