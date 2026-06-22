@@ -1,8 +1,8 @@
 function Header() {
   return (
     <header>
-      <h1>武芸手帳</h1>
-      <p>現代サムライ育成アプリ</p>
+      <h1>Bugei Note</h1>
+      <p>鍛錬と稽古を記録するトレーニングOS</p>
     </header>
   );
 }
