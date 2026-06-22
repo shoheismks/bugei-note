@@ -598,6 +598,8 @@ button:focus-visible {
 }
 
 .logout-card {
+  width: auto;
+  max-width: none;
   margin: 0 16px 16px;
   padding: 12px;
   background: rgba(15, 23, 42, 0.5);
@@ -605,6 +607,163 @@ button:focus-visible {
 
 .logout-card .danger {
   margin-top: 0;
+}
+
+.report-card {
+  max-width: 100%;
+  background:
+    radial-gradient(circle at top right, rgba(56, 189, 248, 0.16), transparent 38%),
+    linear-gradient(180deg, rgba(248, 250, 252, 0.05), rgba(248, 250, 252, 0)),
+    var(--surface);
+}
+
+.report-toolbar,
+.report-hero,
+.report-metrics,
+.report-grid,
+.report-row {
+  display: grid;
+  gap: 10px;
+}
+
+.report-toolbar {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: start;
+}
+
+.report-eyebrow {
+  margin: 0 0 4px;
+  color: var(--accent-2);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: 0;
+  text-transform: uppercase;
+}
+
+.report-print-button {
+  width: auto;
+  min-width: 76px;
+  min-height: 38px;
+  padding: 9px 14px;
+}
+
+.report-hero {
+  grid-template-columns: minmax(0, 1fr) auto;
+  align-items: center;
+  padding: 16px;
+  margin: 12px 0;
+  border: 1px solid rgba(96, 165, 250, 0.28);
+  border-radius: var(--radius);
+  background: linear-gradient(135deg, rgba(59, 130, 246, 0.2), rgba(14, 165, 233, 0.08));
+}
+
+.report-rank {
+  margin: 4px 0;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(28px, 9vw, 44px);
+  font-weight: 850;
+  line-height: 1;
+}
+
+.report-score-ring {
+  display: grid;
+  place-items: center;
+  width: 96px;
+  height: 96px;
+  border: 10px solid rgba(59, 130, 246, 0.25);
+  border-top-color: #38bdf8;
+  border-right-color: #8b5cf6;
+  border-radius: 999px;
+  background: #0b1220;
+}
+
+.report-score-ring span {
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 850;
+  line-height: 1;
+}
+
+.report-score-ring small,
+.report-row small {
+  color: var(--muted);
+}
+
+.report-metrics {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.report-metrics div,
+.report-panel {
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: var(--radius-sm);
+  background: rgba(15, 23, 42, 0.48);
+}
+
+.report-metrics div {
+  padding: 10px;
+}
+
+.report-metrics span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.report-metrics strong {
+  display: block;
+  margin-top: 2px;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 21px;
+  font-variant-numeric: tabular-nums;
+}
+
+.report-grid {
+  grid-template-columns: 1fr;
+  margin-top: 10px;
+}
+
+.report-panel {
+  padding: 12px;
+}
+
+.report-panel h3 {
+  margin-top: 0;
+}
+
+.report-chart {
+  width: 100%;
+  height: 210px;
+}
+
+.report-table {
+  display: grid;
+  gap: 8px;
+}
+
+.report-row {
+  grid-template-columns: auto minmax(64px, 1fr) auto auto;
+  align-items: center;
+  padding: 8px 0;
+  border-bottom: 1px solid rgba(148, 163, 184, 0.12);
+}
+
+.report-row:last-child {
+  border-bottom: 0;
+}
+
+.report-row small {
+  grid-column: 2 / -1;
+  min-width: 0;
+}
+
+.report-dot {
+  width: 10px;
+  height: 10px;
+  border-radius: 999px;
 }
 
 h1,
@@ -728,6 +887,20 @@ span {
     min-height: 180px;
   }
 
+  .report-score-ring {
+    width: 82px;
+    height: 82px;
+    border-width: 8px;
+  }
+
+  .report-score-ring span {
+    font-size: 24px;
+  }
+
+  .report-hero {
+    padding: 13px;
+  }
+
   .big-rank {
     font-size: clamp(32px, 10vw, 42px);
     line-height: 1.12;
@@ -780,5 +953,86 @@ span {
 
   .achievement-card h3 {
     font-size: 18px;
+  }
+}
+
+@page {
+  size: A4;
+  margin: 12mm;
+}
+
+@media print {
+  html,
+  body,
+  #root {
+    width: auto;
+    min-height: auto;
+    overflow: visible;
+    background: #ffffff;
+  }
+
+  body {
+    color: #0f172a;
+    background: #ffffff;
+  }
+
+  .app {
+    width: 100%;
+    max-width: none;
+    min-height: auto;
+    margin: 0;
+    border: 0;
+    background: #ffffff;
+    box-shadow: none;
+  }
+
+  header,
+  nav,
+  .logout-card,
+  .report-print-button,
+  main > .card:not(.report-card) {
+    display: none !important;
+  }
+
+  main {
+    padding: 0;
+    overflow: visible;
+  }
+
+  .report-card {
+    width: 100%;
+    min-height: 273mm;
+    padding: 0;
+    margin: 0;
+    border: 0;
+    color: #0f172a;
+    background: #ffffff;
+    box-shadow: none;
+    page-break-inside: avoid;
+  }
+
+  .report-panel,
+  .report-metrics div,
+  .report-hero {
+    border-color: #cbd5e1;
+    background: #f8fafc;
+  }
+
+  .report-card h2,
+  .report-card h3,
+  .report-rank,
+  .report-score-ring span,
+  .report-metrics strong {
+    color: #0f172a;
+  }
+
+  .report-eyebrow {
+    color: #2563eb;
+  }
+
+  .hint,
+  .report-metrics span,
+  .report-row small {
+    color: #475569;
   }
 }

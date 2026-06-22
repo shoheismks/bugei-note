@@ -30,7 +30,7 @@ function Profile({ profile, saveProfile }) {
           type="text"
           value={draft.dojo_name}
           onChange={(e) => update("dojo_name", e.target.value)}
-          placeholder="例：下越翔平"
+          placeholder="例：山田太郎"
         />
 
         <h3>称号</h3>
