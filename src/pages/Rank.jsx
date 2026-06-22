@@ -340,7 +340,7 @@ function Rank({
   ]);
 
   const exportInfographic = async () => {
-    const svg = buildInfographicSvg({
+    const svg = buildInfographicSvgV2({
       report,
       overallScore,
       totalXp,
@@ -730,6 +730,294 @@ function buildInfographicSvg({ report, overallScore, totalXp, weightClass, ranki
   )}
 
   ${svgText("ランキング・身体推移・実績・日誌・称号・歩数を加味。未記録領域の判断は推測として明記。過度な美化は禁止。", 80, 1688, { size: 15, fill: SLATE })}
+</svg>`;
+}
+
+function clamp(value, min, max) {
+  return Math.min(max, Math.max(min, value));
+}
+
+function formatNumber(value) {
+  const number = Number(value || 0);
+  return Number.isFinite(number) ? number.toLocaleString("ja-JP") : "0";
+}
+
+function buildConsultingMetric(label, value, x, y, width) {
+  return `
+    <line x1="${x}" y1="${y - 18}" x2="${x}" y2="${y + 52}" stroke="${GOLD}" stroke-width="3"/>
+    ${svgText(value, x + 18, y + 14, { size: 30, weight: 900 })}
+    ${svgText(label, x + 18, y + 44, { size: 13, weight: 700, fill: SLATE })}
+    <line x1="${x + width}" y1="${y - 12}" x2="${x + width}" y2="${y + 50}" stroke="#eef2f7"/>
+  `;
+}
+
+function buildConsultingRankList(items, x, y, width, isWeakness = false) {
+  const listMax = Math.max(...items.map((item) => Number(item.score || 0)), 1);
+  const barX = x + width - 178;
+  const barMax = 112;
+
+  return items
+    .map((item, index) => {
+      const rowY = y + index * 42;
+      const score = Number(item.score || 0);
+      const barWidth =
+        score > 0 ? clamp(Math.round((score / listMax) * barMax), 6, barMax) : 0;
+      const label =
+        isWeakness && score === 0
+          ? `${truncateText(item.name, 9)}（推測）`
+          : truncateText(item.name, 13);
+
+      return `
+        <circle cx="${x + 8}" cy="${rowY - 5}" r="9" fill="#f8fafc" stroke="${GOLD}" stroke-width="1.5"/>
+        ${svgText(index + 1, x + 8, rowY, {
+          size: 12,
+          weight: 900,
+          fill: GOLD,
+          anchor: "middle",
+        })}
+        ${svgText(label, x + 30, rowY, { size: 15, weight: 800 })}
+        <rect x="${barX}" y="${rowY - 15}" width="${barMax}" height="8" rx="4" fill="#e5e7eb"/>
+        <rect x="${barX}" y="${rowY - 15}" width="${barWidth}" height="8" rx="4" fill="${item.color || GOLD}"/>
+        ${svgText(formatNumber(score), x + width - 4, rowY, {
+          size: 13,
+          weight: 850,
+          anchor: "end",
+        })}
+      `;
+    })
+    .join("");
+}
+
+function buildInfographicSvgV2({
+  report,
+  overallScore,
+  totalXp,
+  weightClass,
+  rankingSummary,
+}) {
+  const maxScore = Math.max(
+    ...report.partReports.map((item) => Number(item.score || 0)),
+    1
+  );
+  const sourceText = report.dataSources.join(" / ");
+  const chartX = 112;
+  const chartY = 858;
+  const chartWidth = 760;
+  const chartHeight = 168;
+  const gap = 28;
+  const barWidth = Math.floor(
+    (chartWidth - gap * (report.partReports.length - 1)) /
+      report.partReports.length
+  );
+
+  const chartBars = report.partReports
+    .map((item, index) => {
+      const score = Number(item.score || 0);
+      const x = chartX + index * (barWidth + gap);
+      const barHeight =
+        score > 0 ? clamp(Math.round((score / maxScore) * 124), 8, 124) : 0;
+      const y = chartY + chartHeight - barHeight;
+
+      return `
+        <rect x="${x}" y="${chartY + chartHeight - 124}" width="${barWidth}" height="124" rx="8" fill="#f1f5f9"/>
+        <rect x="${x}" y="${y}" width="${barWidth}" height="${barHeight}" rx="8" fill="${item.color}"/>
+        ${svgText(formatNumber(score), x + barWidth / 2, y - 8, {
+          size: 12,
+          weight: 850,
+          fill: NAVY,
+          anchor: "middle",
+        })}
+        ${svgText(item.shortName, x + barWidth / 2, chartY + chartHeight + 28, {
+          size: 12,
+          weight: 800,
+          fill: SLATE,
+          anchor: "middle",
+        })}
+      `;
+    })
+    .join("");
+
+  const tags = report.patternTags
+    .slice(0, 6)
+    .map((tag, index) => {
+      const x = 112 + (index % 2) * 226;
+      const y = 1110 + Math.floor(index / 2) * 40;
+      return `
+        <rect x="${x}" y="${y}" width="204" height="28" rx="14" fill="${index % 2 ? "#fffbeb" : "#eff6ff"}" stroke="${index % 2 ? "#f4d37a" : "#bfdbfe"}"/>
+        ${svgText(truncateText(tag, 11), x + 14, y + 19, {
+          size: 13,
+          weight: 800,
+        })}
+      `;
+    })
+    .join("");
+
+  const directions = report.directions
+    .slice(0, 5)
+    .map(
+      (item, index) => `
+        <g>
+          <circle cx="676" cy="${1084 + index * 36}" r="10" fill="${NAVY}"/>
+          ${svgText(index + 1, 676, 1089 + index * 36, {
+            size: 11,
+            weight: 900,
+            fill: "#ffffff",
+            anchor: "middle",
+          })}
+          ${svgText(truncateText(item, 31), 696, 1089 + index * 36, {
+            size: 14,
+            weight: 650,
+            fill: SLATE,
+          })}
+        </g>`
+    )
+    .join("");
+
+  const catchCopies = report.catchCopies
+    .slice(0, 5)
+    .map((copy, index) => {
+      const y = 1430 + index * 42;
+      return `
+        <rect x="108" y="${y}" width="1024" height="30" rx="6" fill="${index % 2 ? "#fffbeb" : "#f8fafc"}"/>
+        <rect x="108" y="${y}" width="4" height="30" rx="2" fill="${index % 2 ? GOLD : "#2563eb"}"/>
+        ${svgText(`${index + 1}. ${truncateText(copy, 44)}`, 126, y + 21, {
+          size: 15,
+          weight: 760,
+        })}
+      `;
+    })
+    .join("");
+
+  return `
+<svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1754" viewBox="0 0 1240 1754">
+  <rect width="1240" height="1754" fill="#ffffff"/>
+  <rect x="0" y="0" width="1240" height="252" fill="${NAVY}"/>
+  <rect x="80" y="74" width="5" height="114" fill="${GOLD}"/>
+  <rect x="980" y="68" width="156" height="8" rx="4" fill="${GOLD}"/>
+  <rect x="980" y="92" width="92" height="8" rx="4" fill="#3b82f6"/>
+  ${svgText("BODY INTELLIGENCE REPORT", 104, 86, {
+    size: 21,
+    weight: 850,
+    fill: GOLD,
+  })}
+  ${svgText("身体診断インフォグラフィック", 104, 142, {
+    size: 45,
+    weight: 900,
+    fill: "#ffffff",
+  })}
+  ${svgText("根拠：" + truncateText(sourceText, 64), 104, 184, {
+    size: 16,
+    fill: "#cbd5e1",
+  })}
+  ${svgText(`作成日 ${report.reportDate}`, 104, 216, {
+    size: 14,
+    fill: "#94a3b8",
+  })}
+
+  ${buildCard(
+    80,
+    294,
+    1080,
+    146,
+    "身体の要約",
+    `
+      ${buildConsultingMetric("総合スコア", formatNumber(Math.round(overallScore || 0)), 116, 354, 170)}
+      ${buildConsultingMetric("累計XP", formatNumber(totalXp), 304, 354, 170)}
+      ${buildConsultingMetric(`体重 ${report.bodySummary.weightDelta}`, report.bodySummary.latestWeight, 492, 354, 170)}
+      ${buildConsultingMetric("平均歩数", formatNumber(report.stepSummary.average), 680, 354, 170)}
+      ${buildConsultingMetric("ランキング", `${rankingSummary.rank}/${rankingSummary.total || "-"}`, 868, 354, 170)}
+      ${svgText(weightClass || "-", 1050, 368, {
+        size: 22,
+        weight: 900,
+        anchor: "middle",
+      })}
+      ${svgText("階級", 1050, 398, {
+        size: 13,
+        weight: 700,
+        fill: SLATE,
+        anchor: "middle",
+      })}
+    `
+  )}
+
+  ${buildCard(
+    80,
+    476,
+    520,
+    268,
+    "強み TOP5",
+    buildConsultingRankList(report.strengthTop5, 116, 548, 438)
+  )}
+
+  ${buildCard(
+    640,
+    476,
+    520,
+    268,
+    "弱み・盲点 TOP5",
+    buildConsultingRankList(report.weaknessTop5, 676, 548, 438, true)
+  )}
+
+  ${buildCard(
+    80,
+    776,
+    1080,
+    304,
+    "鍛錬スコア図解",
+    `
+      <line x1="${chartX}" y1="${chartY + chartHeight}" x2="${chartX + chartWidth}" y2="${chartY + chartHeight}" stroke="#cbd5e1" stroke-width="1.5"/>
+      ${chartBars}
+      <rect x="928" y="856" width="172" height="92" rx="8" fill="#f8fafc" stroke="#e2e8f0"/>
+      ${svgText(formatNumber(report.averageScore), 1014, 900, {
+        size: 38,
+        weight: 900,
+        fill: GOLD,
+        anchor: "middle",
+      })}
+      ${svgText("平均スコア", 1014, 928, {
+        size: 13,
+        weight: 700,
+        fill: SLATE,
+        anchor: "middle",
+      })}
+      <rect x="928" y="966" width="172" height="44" rx="8" fill="#0f172a"/>
+      ${svgText(`記録日数 ${formatNumber(report.activeDays)}`, 1014, 994, {
+        size: 14,
+        weight: 800,
+        fill: "#ffffff",
+        anchor: "middle",
+      })}
+    `
+  )}
+
+  ${buildCard(
+    80,
+    1110,
+    520,
+    220,
+    "身体パターンの特徴",
+    `
+      ${tags}
+      ${svgWrappedText(`身体推移：${report.bodySummary.label} / 体脂肪 ${report.bodySummary.bodyFatDelta}`, 112, 1240, 28, 20, { size: 13, maxLines: 2 })}
+      ${svgWrappedText(`日誌要約：${report.journalHint ? truncateText(report.journalHint, 34) : "未記録"}`, 112, 1280, 28, 20, { size: 13, maxLines: 2 })}
+    `
+  )}
+
+  ${buildCard(640, 1110, 520, 220, "今後伸ばすべき方向性", directions)}
+
+  ${buildCard(
+    80,
+    1360,
+    1080,
+    294,
+    "私を一言で表すキャッチコピー 5案",
+    catchCopies
+  )}
+
+  ${svgText("ランキング・身体推移・実績・日誌・称号・歩数を加味。未記録領域の判断は推測として明記。過度な美化は禁止。", 80, 1698, {
+    size: 13,
+    fill: SLATE,
+  })}
 </svg>`;
 }
 
