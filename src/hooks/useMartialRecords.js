@@ -34,39 +34,6 @@ export function useMartialRecords() {
     setMartialDate("");
   };
 
-  const importMartialRecords = (rows) => {
-    const imported = (rows || [])
-      .map((row) => {
-        const rowDate = row.date
-          ? new Date(`${row.date}T12:00:00`)
-          : new Date();
-        const count = row.count || row.reps || "";
-        const xp = row.xp || Math.max(1, Math.round(Number(count || 0) / 5));
-
-        return {
-          date: Number.isNaN(rowDate.getTime())
-            ? new Date().toISOString()
-            : rowDate.toISOString(),
-          art: row.art || martialArt,
-          menu: row.menu || martialMenu,
-          count,
-          xp,
-        };
-      })
-      .filter((record) => record.art && record.menu && record.count);
-
-    if (imported.length === 0) return 0;
-
-    const updated = [...imported, ...martialRecords].sort(
-      (a, b) => new Date(b.date) - new Date(a.date)
-    );
-
-    setMartialRecords(updated);
-    localStorage.setItem("martialRecords", JSON.stringify(updated));
-
-    return imported.length;
-  };
-
   const deleteMartialRecord = (indexToDelete) => {
     const updated = martialRecords.filter(
       (_, index) => index !== indexToDelete
@@ -95,7 +62,6 @@ export function useMartialRecords() {
     setMartialDate,
     martialRecords,
     saveMartialRecord,
-    importMartialRecords,
     deleteMartialRecord,
     resetMartialRecords,
   };

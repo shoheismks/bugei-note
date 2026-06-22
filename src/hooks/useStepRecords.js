@@ -3,6 +3,7 @@ import { supabase } from "../lib/supabase";
 
 export function useStepRecords() {
   const [steps, setSteps] = useState("");
+  const [stepDate, setStepDate] = useState("");
 
   const [stepRecords, setStepRecords] = useState(
     JSON.parse(localStorage.getItem("stepRecords") || "[]")
@@ -48,7 +49,9 @@ export function useStepRecords() {
     if (!steps) return;
 
     const newRecord = {
-      date: new Date().toISOString(),
+      date: stepDate
+        ? new Date(`${stepDate}T12:00:00`).toISOString()
+        : new Date().toISOString(),
       steps: Number(steps),
     };
 
@@ -81,6 +84,7 @@ export function useStepRecords() {
     );
 
     setSteps("");
+    setStepDate("");
   };
 
   const deleteStepRecord = (index) => {
@@ -95,6 +99,7 @@ export function useStepRecords() {
   };
 
   const resetStepRecords = () => {
+    setStepDate("");
     setStepRecords([]);
     localStorage.removeItem("stepRecords");
   };
@@ -102,6 +107,8 @@ export function useStepRecords() {
   return {
     steps,
     setSteps,
+    stepDate,
+    setStepDate,
     stepRecords,
     saveStepRecord,
     deleteStepRecord,

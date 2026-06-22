@@ -87,7 +87,6 @@ function App() {
     trainingDate,
     setTrainingDate,
     deleteTrainingRecord,
-    importTrainingRecords,
     getRecordScore,
     resetTrainingRecords,
   } = useTrainingRecords();
@@ -103,7 +102,6 @@ function App() {
     setMartialDate,
     martialRecords,
     saveMartialRecord,
-    importMartialRecords,
     deleteMartialRecord,
     resetMartialRecords,
   } = useMartialRecords();
@@ -161,6 +159,8 @@ function App() {
    const {
     steps,
     setSteps,
+    stepDate,
+    setStepDate,
     stepRecords,
     saveStepRecord,
     deleteStepRecord,
@@ -360,7 +360,6 @@ if (!session) {
   setTrainingDate={setTrainingDate}
   handlePartChange={handlePartChange}
   handleSaveTrainingRecord={handleSaveTrainingRecord}
-  importTrainingRecords={importTrainingRecords}
   deleteTrainingRecord={deleteTrainingRecord}
   getRecordScore={getRecordScore}
   getPartBestScore={getPartBestScore}
@@ -375,7 +374,6 @@ if (!session) {
   martialDate={martialDate}
   setMartialDate={setMartialDate}
   saveMartialRecord={saveMartialRecord}
-  importMartialRecords={importMartialRecords}
   deleteMartialRecord={deleteMartialRecord}
   journalText={journalText}
   setJournalText={setJournalText}
@@ -385,6 +383,8 @@ if (!session) {
   deleteJournalRecord={deleteJournalRecord}
   steps={steps}
   setSteps={setSteps}
+  stepDate={stepDate}
+  setStepDate={setStepDate}
   saveStepRecord={saveStepRecord}
   deleteStepRecord={deleteStepRecord}
   getTechniqueLevel={getTechniqueLevel}

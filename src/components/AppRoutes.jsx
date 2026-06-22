@@ -54,7 +54,6 @@ function AppRoutes(props) {
         setTrainingDate={props.setTrainingDate}
         handlePartChange={props.handlePartChange}
         saveTrainingRecord={props.handleSaveTrainingRecord}
-        importTrainingRecords={props.importTrainingRecords}
         deleteTrainingRecord={props.deleteTrainingRecord}
         getRecordScore={props.getRecordScore}
       />
@@ -104,7 +103,6 @@ function AppRoutes(props) {
         setMartialDate={props.setMartialDate}
         martialRecords={props.martialRecords}
         saveMartialRecord={props.saveMartialRecord}
-        importMartialRecords={props.importMartialRecords}
         deleteMartialRecord={props.deleteMartialRecord}
       />
     );
@@ -144,6 +142,8 @@ function AppRoutes(props) {
       <Steps
         steps={props.steps}
         setSteps={props.setSteps}
+        stepDate={props.stepDate}
+        setStepDate={props.setStepDate}
         stepRecords={props.stepRecords}
         saveStepRecord={props.saveStepRecord}
         deleteStepRecord={props.deleteStepRecord}

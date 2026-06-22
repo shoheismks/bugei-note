@@ -2,6 +2,8 @@ import StepStatsCard from "../components/steps/StepStatsCard";
 function Steps({
   steps,
   setSteps,
+  stepDate,
+  setStepDate,
   stepRecords,
   saveStepRecord,
   deleteStepRecord,
@@ -53,6 +55,12 @@ function Steps({
           placeholder="歩数"
           value={steps}
           onChange={(e) => setSteps(e.target.value)}
+        />
+
+        <input
+          type="date"
+          value={stepDate}
+          onChange={(e) => setStepDate(e.target.value)}
         />
 
         <button

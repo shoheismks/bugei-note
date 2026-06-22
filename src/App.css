@@ -241,6 +241,14 @@ textarea {
   box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.03);
 }
 
+input[type="date"] {
+  display: block;
+  text-align: center;
+  text-align-last: center;
+  margin-left: auto;
+  margin-right: auto;
+}
+
 textarea {
   min-height: 88px;
   margin-top: 8px;
