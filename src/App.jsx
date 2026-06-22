@@ -303,17 +303,6 @@ if (!session) {
 
       <Header />
 
-      <section className="card">
-        <button
-          className="danger"
-          onClick={async () => {
-            await supabase.auth.signOut();
-            window.location.reload();
-          }}
-        >
-          ログアウト
-        </button>
-      </section>
       <Navigation setTab={setTab} />
 
       
@@ -397,6 +386,18 @@ if (!session) {
 
   
 />
+
+      <section className="card logout-card">
+        <button
+          className="danger"
+          onClick={async () => {
+            await supabase.auth.signOut();
+            window.location.reload();
+          }}
+        >
+          ログアウト
+        </button>
+      </section>
 
 </div>
 );

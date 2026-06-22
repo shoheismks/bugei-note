@@ -62,7 +62,7 @@ function Home({
   ].filter(Boolean).length;
 
   return (
-    <main>
+    <main className="home-main">
       <HomeProfileCard
         selectedTitle={selectedTitle}
         changeTitle={changeTitle}
