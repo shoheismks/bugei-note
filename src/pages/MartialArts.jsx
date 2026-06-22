@@ -5,6 +5,25 @@ import {
   getNextMartialRankXp,
 } from "../martialRank";
 
+function parseCsvRows(text) {
+  const [headerLine, ...lines] = text
+    .replace(/^\uFEFF/, "")
+    .split(/\r?\n/)
+    .filter((line) => line.trim());
+
+  if (!headerLine) return [];
+
+  const headers = headerLine.split(",").map((header) => header.trim());
+
+  return lines.map((line) => {
+    const values = line.split(",").map((value) => value.trim());
+    return headers.reduce((row, header, index) => {
+      row[header] = values[index] || "";
+      return row;
+    }, {});
+  });
+}
+
 function MartialArts({
   martialArt,
   setMartialArt,
@@ -12,10 +31,26 @@ function MartialArts({
   setMartialMenu,
   martialCount,
   setMartialCount,
+  martialDate,
+  setMartialDate,
   martialRecords,
   saveMartialRecord,
+  importMartialRecords,
   deleteMartialRecord,
 }) {
+  const handleImport = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = () => {
+      const count = importMartialRecords(parseCsvRows(reader.result));
+      alert(`${count}件の稽古データを取り込みました`);
+      event.target.value = "";
+    };
+    reader.readAsText(file);
+  };
+
   const getXpByArt = (art) => {
     return martialRecords
       .filter((record) => record.art === art)
@@ -151,9 +186,21 @@ function MartialArts({
           onChange={(e) => setMartialCount(e.target.value)}
         />
 
+        <input
+          type="date"
+          value={martialDate}
+          onChange={(e) => setMartialDate(e.target.value)}
+        />
+
         <button className="primary" onClick={saveMartialRecord}>
           武芸記録を保存
         </button>
+      </section>
+
+      <section className="card">
+        <h2>過去の稽古データをインポート</h2>
+        <p className="hint">CSV列: date,art,menu,count,xp</p>
+        <input type="file" accept=".csv,text/csv" onChange={handleImport} />
       </section>
 
       <section className="card">

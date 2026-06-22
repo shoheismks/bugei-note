@@ -50,8 +50,11 @@ function AppRoutes(props) {
         setTrainingWeight={props.setTrainingWeight}
         setReps={props.setReps}
         setSets={props.setSets}
+        trainingDate={props.trainingDate}
+        setTrainingDate={props.setTrainingDate}
         handlePartChange={props.handlePartChange}
         saveTrainingRecord={props.handleSaveTrainingRecord}
+        importTrainingRecords={props.importTrainingRecords}
         deleteTrainingRecord={props.deleteTrainingRecord}
         getRecordScore={props.getRecordScore}
       />
@@ -97,8 +100,11 @@ function AppRoutes(props) {
         setMartialMenu={props.setMartialMenu}
         martialCount={props.martialCount}
         setMartialCount={props.setMartialCount}
+        martialDate={props.martialDate}
+        setMartialDate={props.setMartialDate}
         martialRecords={props.martialRecords}
         saveMartialRecord={props.saveMartialRecord}
+        importMartialRecords={props.importMartialRecords}
         deleteMartialRecord={props.deleteMartialRecord}
       />
     );

@@ -84,7 +84,10 @@ function App() {
     setReps,
     sets,
     setSets,
+    trainingDate,
+    setTrainingDate,
     deleteTrainingRecord,
+    importTrainingRecords,
     getRecordScore,
     resetTrainingRecords,
   } = useTrainingRecords();
@@ -96,8 +99,11 @@ function App() {
     setMartialMenu,
     martialCount,
     setMartialCount,
+    martialDate,
+    setMartialDate,
     martialRecords,
     saveMartialRecord,
+    importMartialRecords,
     deleteMartialRecord,
     resetMartialRecords,
   } = useMartialRecords();
@@ -350,8 +356,11 @@ if (!session) {
   setTrainingWeight={setTrainingWeight}
   setReps={setReps}
   setSets={setSets}
+  trainingDate={trainingDate}
+  setTrainingDate={setTrainingDate}
   handlePartChange={handlePartChange}
   handleSaveTrainingRecord={handleSaveTrainingRecord}
+  importTrainingRecords={importTrainingRecords}
   deleteTrainingRecord={deleteTrainingRecord}
   getRecordScore={getRecordScore}
   getPartBestScore={getPartBestScore}
@@ -363,7 +372,10 @@ if (!session) {
   setMartialMenu={setMartialMenu}
   martialCount={martialCount}
   setMartialCount={setMartialCount}
+  martialDate={martialDate}
+  setMartialDate={setMartialDate}
   saveMartialRecord={saveMartialRecord}
+  importMartialRecords={importMartialRecords}
   deleteMartialRecord={deleteMartialRecord}
   journalText={journalText}
   setJournalText={setJournalText}

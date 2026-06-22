@@ -14,6 +14,7 @@ export function useTrainingRecords() {
   const [trainingWeight, setTrainingWeight] = useState("");
   const [reps, setReps] = useState("");
   const [sets, setSets] = useState("");
+  const [trainingDate, setTrainingDate] = useState("");
 
   useEffect(() => {
     loadTrainingRecords();
@@ -88,7 +89,9 @@ export function useTrainingRecords() {
     });
 
     const newRecord = {
-      date: new Date().toISOString(),
+      date: trainingDate
+        ? new Date(`${trainingDate}T12:00:00`).toISOString()
+        : new Date().toISOString(),
       part: trainingPart,
       exercise,
       weight: isTimeBased ? "" : trainingWeight,
@@ -160,6 +163,77 @@ export function useTrainingRecords() {
     setTrainingWeight("");
     setReps("");
     setSets("");
+    setTrainingDate("");
+  };
+
+  const importTrainingRecords = async (rows) => {
+    const imported = (rows || [])
+      .map((row) => {
+        const rowDate = row.date
+          ? new Date(`${row.date}T12:00:00`)
+          : new Date();
+        const isTime = timeBasedExercises.includes(row.exercise);
+        const record = {
+          date: Number.isNaN(rowDate.getTime())
+            ? new Date().toISOString()
+            : rowDate.toISOString(),
+          part: row.part || trainingPart,
+          exercise: row.exercise || exercise,
+          weight: isTime ? "" : row.weight || "",
+          reps: row.reps || "",
+          sets: isTime ? "" : row.sets || "",
+          xp:
+            row.xp ||
+            calculateXpGain({
+              isTimeBased: isTime,
+              reps: row.reps || "",
+              trainingWeight: row.weight || "",
+              sets: row.sets || "",
+            }),
+          rule: row.rule || (isTime ? "秒数" : "表示重量"),
+          memo: row.memo || "",
+        };
+
+        return record.exercise && record.reps ? record : null;
+      })
+      .filter(Boolean);
+
+    if (imported.length === 0) return 0;
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser();
+
+    if (user) {
+      const { error } = await supabase.from("training_records").insert(
+        imported.map((record) => ({
+          user_id: user.id,
+          date: record.date,
+          category: record.part,
+          exercise: record.exercise,
+          weight: record.weight ? Number(record.weight) : null,
+          reps: record.reps ? Number(record.reps) : null,
+          sets: record.sets ? Number(record.sets) : null,
+          xp: Number(record.xp || 0),
+          rule: record.rule,
+          memo: record.memo,
+        }))
+      );
+
+      if (error) {
+        alert(error.message);
+        return 0;
+      }
+    }
+
+    const updated = [...imported, ...trainingRecords].sort(
+      (a, b) => new Date(b.date) - new Date(a.date)
+    );
+
+    setTrainingRecords(updated);
+    localStorage.setItem("trainingRecords", JSON.stringify(updated));
+
+    return imported.length;
   };
 
   const deleteTrainingRecord = (indexToDelete) => {
@@ -178,6 +252,7 @@ export function useTrainingRecords() {
     setTrainingWeight("");
     setReps("");
     setSets("");
+    setTrainingDate("");
   };
 
   return {
@@ -193,7 +268,10 @@ export function useTrainingRecords() {
     setReps,
     sets,
     setSets,
+    trainingDate,
+    setTrainingDate,
     saveTrainingRecord,
+    importTrainingRecords,
     deleteTrainingRecord,
     getRecordScore,
     resetTrainingRecords,

@@ -2,6 +2,25 @@ import { useState } from "react";
 import { parts, exercisesByPart, timeBasedExercises } from "../data";
 import { scoreToRank, scoreToSamuraiTitle } from "../rank";
 
+function parseCsvRows(text) {
+  const [headerLine, ...lines] = text
+    .replace(/^\uFEFF/, "")
+    .split(/\r?\n/)
+    .filter((line) => line.trim());
+
+  if (!headerLine) return [];
+
+  const headers = headerLine.split(",").map((header) => header.trim());
+
+  return lines.map((line) => {
+    const values = line.split(",").map((value) => value.trim());
+    return headers.reduce((row, header, index) => {
+      row[header] = values[index] || "";
+      return row;
+    }, {});
+  });
+}
+
 function Training({
   trainingPart,
   exercise,
@@ -17,8 +36,11 @@ function Training({
   setTrainingWeight,
   setReps,
   setSets,
+  trainingDate,
+  setTrainingDate,
   handlePartChange,
   saveTrainingRecord,
+  importTrainingRecords,
   deleteTrainingRecord,
   getRecordScore,
 }) {
@@ -55,6 +77,19 @@ function Training({
     });
 
     setCustomExercise("");
+  };
+
+  const handleImport = (event) => {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    const reader = new FileReader();
+    reader.onload = async () => {
+      const count = await importTrainingRecords(parseCsvRows(reader.result));
+      alert(`${count}件の鍛錬データを取り込みました`);
+      event.target.value = "";
+    };
+    reader.readAsText(file);
   };
 
   return (
@@ -156,6 +191,12 @@ function Training({
           />
         )}
 
+        <input
+          type="date"
+          value={trainingDate}
+          onChange={(e) => setTrainingDate(e.target.value)}
+        />
+
         <p className="hint">
           {isCustom && "自由種目はタイプに応じてXP計算します"}
           {!isCustom && isDumbbell && "ダンベル種目は片手重量で入力"}
@@ -169,6 +210,14 @@ function Training({
         <button className="primary" onClick={handleSave}>
           稽古記録を保存
         </button>
+      </section>
+
+      <section className="card">
+        <h2>過去の鍛錬データをインポート</h2>
+        <p className="hint">
+          CSV列: date,part,exercise,weight,reps,sets,xp
+        </p>
+        <input type="file" accept=".csv,text/csv" onChange={handleImport} />
       </section>
 
       {trainingRecords.length === 0 && (
