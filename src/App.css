@@ -599,6 +599,8 @@ button:focus-visible {
 
 .logout-card {
   align-self: center;
+  display: flex;
+  justify-content: center;
   width: calc(100% - 32px);
   max-width: 448px;
   margin: 0 auto 16px;
@@ -609,6 +611,7 @@ button:focus-visible {
 .logout-card .danger {
   display: block;
   width: 100%;
+  max-width: none;
   margin: 0 !important;
   text-align: center;
 }

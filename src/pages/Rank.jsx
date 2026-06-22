@@ -1,3 +1,4 @@
+import { useEffect, useMemo, useState } from "react";
 import { parts, timeBasedExercises } from "../data";
 import { scoreToRank, scoreToSamuraiTitle } from "../rank";
 import {
@@ -9,6 +10,7 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { supabase } from "../lib/supabase";
 
 const COLORS = [
   "#0ea5e9",
@@ -21,8 +23,10 @@ const COLORS = [
   "#dc2626",
 ];
 
-const GOLD = "#c9a227";
 const NAVY = "#0f172a";
+const GOLD = "#c9a227";
+const SLATE = "#475569";
+const BORDER = "#dbe3ef";
 
 function escapeXml(value) {
   return String(value ?? "")
@@ -33,15 +37,20 @@ function escapeXml(value) {
     .replace(/'/g, "&apos;");
 }
 
-function chunkText(text, maxLength = 24) {
-  const source = String(text || "-");
-  const chunks = [];
+function truncateText(value, maxLength = 34) {
+  const text = String(value || "-").replace(/\s+/g, " ").trim();
+  return text.length > maxLength ? `${text.slice(0, maxLength - 1)}…` : text;
+}
 
-  for (let i = 0; i < source.length; i += maxLength) {
-    chunks.push(source.slice(i, i + maxLength));
+function wrapText(value, maxLength = 25, maxLines = 2) {
+  const text = String(value || "-").replace(/\s+/g, " ").trim();
+  const lines = [];
+
+  for (let i = 0; i < text.length; i += maxLength) {
+    lines.push(text.slice(i, i + maxLength));
   }
 
-  return chunks.slice(0, 3);
+  return lines.slice(0, maxLines);
 }
 
 function sumBy(records, key, valueKey = "xp") {
@@ -54,16 +63,72 @@ function sumBy(records, key, valueKey = "xp") {
 
 function getActiveDays(records) {
   return new Set(
-    (records || []).map((record) => new Date(record.date).toDateString())
+    (records || [])
+      .filter((record) => record.date)
+      .map((record) => new Date(record.date).toDateString())
   ).size;
 }
 
 function getLatestDate(records) {
-  if (!records || records.length === 0) return "-";
+  const times = (records || [])
+    .map((record) => new Date(record.date).getTime())
+    .filter((time) => Number.isFinite(time));
 
-  return new Date(
-    Math.max(...records.map((record) => new Date(record.date).getTime()))
-  ).toLocaleDateString("ja-JP");
+  if (times.length === 0) return "-";
+
+  return new Date(Math.max(...times)).toLocaleDateString("ja-JP");
+}
+
+function getBodySummary(bodyRecords) {
+  const records = [...(bodyRecords || [])].sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+
+  if (records.length === 0) {
+    return {
+      latestWeight: "-",
+      latestBodyFat: "-",
+      weightDelta: "-",
+      bodyFatDelta: "-",
+      label: "身体推移は未記録",
+    };
+  }
+
+  const first = records[0];
+  const latest = records[records.length - 1];
+  const latestWeight = Number(latest.weight || 0);
+  const latestBodyFat = Number(latest.bodyFat || 0);
+  const firstWeight = Number(first.weight || 0);
+  const firstBodyFat = Number(first.bodyFat || 0);
+
+  return {
+    latestWeight: latestWeight ? `${latestWeight.toFixed(1)}kg` : "-",
+    latestBodyFat: latestBodyFat ? `${latestBodyFat.toFixed(1)}%` : "-",
+    weightDelta:
+      latestWeight && firstWeight
+        ? `${latestWeight - firstWeight >= 0 ? "+" : ""}${(
+            latestWeight - firstWeight
+          ).toFixed(1)}kg`
+        : "-",
+    bodyFatDelta:
+      latestBodyFat && firstBodyFat
+        ? `${latestBodyFat - firstBodyFat >= 0 ? "+" : ""}${(
+            latestBodyFat - firstBodyFat
+          ).toFixed(1)}%`
+        : "-",
+    label: `${records.length}件の身体推移`,
+  };
+}
+
+function getStepSummary(stepRecords) {
+  const records = stepRecords || [];
+  const total = records.reduce((sum, record) => sum + Number(record.steps || 0), 0);
+  const average = records.length ? Math.round(total / records.length) : 0;
+  return {
+    total,
+    average,
+    count: records.length,
+  };
 }
 
 function Rank({
@@ -72,123 +137,218 @@ function Rank({
   weightClass,
   trainingRecords = [],
   martialRecords = [],
+  bodyRecords = [],
+  journalRecords = [],
+  stepRecords = [],
+  unlockedAchievements = [],
+  unlockedTitles = [],
+  selectedTitle,
+  combatPower,
   getPartBestScore,
   getBestRecord,
   getRecordScore,
 }) {
-  const reportDate = new Date().toLocaleDateString("ja-JP", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
+  const [rankingSummary, setRankingSummary] = useState({
+    rank: "-",
+    total: 0,
+    powerGap: 0,
   });
 
-  const partReports = parts.map((part, index) => {
-    const score = getPartBestScore(part);
-    const bestRecord = getBestRecord(part);
+  useEffect(() => {
+    let isMounted = true;
+
+    async function loadRankingSummary() {
+      const {
+        data: { user },
+      } = await supabase.auth.getUser();
+
+      if (!user) return;
+
+      const { data, error } = await supabase
+        .from("ranking_profiles")
+        .select("user_id, combat_power")
+        .order("combat_power", { ascending: false });
+
+      if (error || !isMounted) return;
+
+      const rankings = data || [];
+      const myIndex = rankings.findIndex((player) => player.user_id === user.id);
+      const topPower = Number(rankings[0]?.combat_power || 0);
+      const myPower =
+        myIndex >= 0 ? Number(rankings[myIndex]?.combat_power || 0) : 0;
+
+      setRankingSummary({
+        rank: myIndex >= 0 ? myIndex + 1 : "-",
+        total: rankings.length,
+        powerGap: myIndex >= 0 ? Math.max(0, topPower - myPower) : 0,
+      });
+    }
+
+    loadRankingSummary();
+
+    return () => {
+      isMounted = false;
+    };
+  }, []);
+
+  const report = useMemo(() => {
+    const reportDate = new Date().toLocaleDateString("ja-JP", {
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    });
+
+    const partReports = parts.map((part, index) => {
+      const score = getPartBestScore(part);
+      const bestRecord = getBestRecord(part);
+
+      return {
+        type: "鍛錬",
+        name: part,
+        shortName: String(part).slice(0, 4),
+        score: Math.round(score || 0),
+        rank: scoreToRank(score),
+        title: scoreToSamuraiTitle(score),
+        bestRecord,
+        count: trainingRecords.filter((record) => record.part === part).length,
+        color: COLORS[index % COLORS.length],
+      };
+    });
+
+    const martialReports = Object.entries(sumBy(martialRecords, "art")).map(
+      ([name, xp], index) => ({
+        type: "稽古",
+        name,
+        shortName: String(name).slice(0, 4),
+        score: Math.round(xp),
+        rank: `${Math.round(xp)}XP`,
+        title: "稽古XP",
+        count: martialRecords.filter((record) => record.art === name).length,
+        color: COLORS[(index + 3) % COLORS.length],
+      })
+    );
+
+    const combinedReports = [...partReports, ...martialReports];
+    const strengthTop5 = [...combinedReports]
+      .sort((a, b) => b.score - a.score)
+      .slice(0, 5);
+    const weaknessTop5 = [...combinedReports]
+      .sort((a, b) => a.score - b.score)
+      .slice(0, 5);
+
+    const trainingXp = trainingRecords.reduce(
+      (sum, record) => sum + Number(record.xp || 0),
+      0
+    );
+    const martialXp = martialRecords.reduce(
+      (sum, record) => sum + Number(record.xp || 0),
+      0
+    );
+    const trainedParts = partReports.filter((item) => item.score > 0).length;
+    const activeDays = getActiveDays([
+      ...trainingRecords,
+      ...martialRecords,
+      ...bodyRecords,
+      ...journalRecords,
+      ...stepRecords,
+    ]);
+    const averageScore =
+      partReports.length > 0
+        ? Math.round(
+            partReports.reduce((sum, item) => sum + item.score, 0) /
+              partReports.length
+          )
+        : 0;
+    const bodySummary = getBodySummary(bodyRecords);
+    const stepSummary = getStepSummary(stepRecords);
+    const topPart = strengthTop5[0];
+    const weakestPart = weaknessTop5[0];
+    const journalHint = journalRecords[0]?.text || journalRecords[0]?.memo || "";
+    const achievementCount = unlockedAchievements.length;
+    const titleCount = unlockedTitles.length;
+
+    const patternTags = [
+      trainingXp >= martialXp ? "鍛錬寄り" : "稽古寄り",
+      activeDays >= 12 ? "継続型" : "記録密度は低め（推測）",
+      trainedParts >= Math.ceil(parts.length * 0.7)
+        ? "全身バランス型"
+        : "部位の偏りあり（推測）",
+      stepSummary.average >= 8000 ? "活動量高め" : "歩数は伸びしろ",
+      bodyRecords.length > 1 ? "身体推移あり" : "身体推移は不足",
+      journalRecords.length > 0 ? "内省ログあり" : "日誌は未記録",
+    ];
+
+    const directions = [
+      `${weakestPart?.name || "未記録領域"}を週1回だけ追加し、盲点を潰す`,
+      `歩数平均${stepSummary.average || 0}歩を基準に、活動量の底上げを見る`,
+      "身体推移と鍛錬強度を同じ週で比較し、増減の理由を日誌に残す",
+      "ランキング差は順位より戦闘力差で確認し、短期の上下に寄せすぎない",
+      "推測：強み種目の伸びた翌日は低強度の稽古で疲労を逃がす",
+    ];
+
+    const catchCopies = [
+      `静かに積み上げる${topPart?.name || "鍛錬"}型プレイヤー`,
+      "数字と日誌で身体を編集する実践者",
+      "強みを磨き、盲点を記録で潰す人",
+      "鍛錬・稽古・歩数を横断する身体探求者",
+      `${selectedTitle || "称号"}を背負うミニマル武道家`,
+    ];
+
+    const dataSources = [
+      `鍛錬${trainingRecords.length}件`,
+      `稽古${martialRecords.length}件`,
+      `身体${bodyRecords.length}件`,
+      `日誌${journalRecords.length}件`,
+      `歩数${stepRecords.length}件`,
+      `実績${achievementCount}件`,
+      `称号${titleCount}件`,
+      `順位${rankingSummary.rank}/${rankingSummary.total || "-"}`,
+    ];
 
     return {
-      type: "鍛錬",
-      name: part,
-      shortName: String(part).slice(0, 4),
-      score: Math.round(score || 0),
-      rank: scoreToRank(score),
-      title: scoreToSamuraiTitle(score),
-      bestRecord,
-      count: trainingRecords.filter((record) => record.part === part).length,
-      color: COLORS[index % COLORS.length],
-    };
-  });
-
-  const martialXpByArt = sumBy(martialRecords, "art");
-  const martialReports = Object.entries(martialXpByArt).map(
-    ([name, xp], index) => ({
-      type: "稽古",
-      name,
-      shortName: String(name).slice(0, 4),
-      score: Math.round(xp),
-      rank: `${Math.round(xp)}XP`,
-      title: "稽古XP",
-      count: martialRecords.filter((record) => record.art === name).length,
-      color: COLORS[(index + 3) % COLORS.length],
-    })
-  );
-
-  const combinedReports = [...partReports, ...martialReports];
-  const strengthTop5 = [...combinedReports]
-    .sort((a, b) => b.score - a.score)
-    .slice(0, 5);
-  const weaknessTop5 = [...combinedReports]
-    .sort((a, b) => a.score - b.score)
-    .slice(0, 5);
-
-  const trainingXp = trainingRecords.reduce(
-    (sum, record) => sum + Number(record.xp || 0),
-    0
-  );
-  const martialXp = martialRecords.reduce(
-    (sum, record) => sum + Number(record.xp || 0),
-    0
-  );
-  const trainedParts = partReports.filter((item) => item.score > 0).length;
-  const activeDays = getActiveDays([...trainingRecords, ...martialRecords]);
-  const averageScore =
-    partReports.length > 0
-      ? Math.round(
-          partReports.reduce((sum, item) => sum + item.score, 0) /
-            partReports.length
-        )
-      : 0;
-  const topPart = strengthTop5[0];
-  const weakestPart = weaknessTop5[0];
-
-  const patternTags = [
-    trainingXp >= martialXp ? "鍛錬寄り" : "稽古寄り",
-    activeDays >= 8 ? "継続型" : "単発集中型（推測）",
-    trainedParts >= Math.ceil(parts.length * 0.7)
-      ? "全身バランス型"
-      : "偏りあり（推測）",
-    averageScore >= 60 ? "高出力傾向" : "基礎構築フェーズ",
-  ];
-
-  const directions = [
-    `${weakestPart?.name || "未記録領域"}を週1回だけ追加し、盲点を潰す`,
-    "強み種目は記録を継続し、重量・回数・秒数のどれか1指標で比較する",
-    "稽古XPと鍛錬XPの差を月次で見て、偏りを数値で確認する",
-    "推測：疲労管理のため、伸びた翌日は低強度の技術練習に寄せる",
-  ];
-
-  const catchCopies = [
-    `静かに積み上げる${topPart?.name || "鍛錬"}型プレイヤー`,
-    "数字で自分を鍛えるミニマル武道家",
-    "強みを磨き、盲点を記録で潰す人",
-    "鍛錬と稽古を横断する実践型アスリート",
-    "派手さより継続で勝つ身体探求者",
-  ];
-
-  const exportInfographic = async () => {
-    const svg = buildInfographicSvg({
       reportDate,
-      overallScore,
-      totalXp,
-      weightClass,
-      trainingRecords,
-      martialRecords,
       partReports,
       strengthTop5,
       weaknessTop5,
+      trainingXp,
+      martialXp,
+      trainedParts,
+      activeDays,
+      averageScore,
+      bodySummary,
+      stepSummary,
       patternTags,
       directions,
       catchCopies,
-      trainingXp,
-      martialXp,
-      activeDays,
-      trainedParts,
-      averageScore,
+      dataSources,
+      journalHint,
+      combatPowerTotal: combatPower?.total || 0,
+    };
+  }, [
+    bodyRecords,
+    combatPower,
+    getBestRecord,
+    getPartBestScore,
+    journalRecords,
+    martialRecords,
+    rankingSummary,
+    selectedTitle,
+    stepRecords,
+    trainingRecords,
+    unlockedAchievements,
+    unlockedTitles,
+  ]);
+
+  const exportInfographic = async () => {
+    const svg = buildInfographicSvg({
+      report,
+      overallScore,
+      totalXp,
+      weightClass,
+      rankingSummary,
     });
 
-    const blob = new Blob([svg], {
-      type: "image/svg+xml;charset=utf-8",
-    });
+    const blob = new Blob([svg], { type: "image/svg+xml;charset=utf-8" });
     const url = URL.createObjectURL(blob);
     const image = new Image();
 
@@ -208,7 +368,7 @@ function Rank({
         const downloadUrl = URL.createObjectURL(pngBlob);
         const link = document.createElement("a");
         link.href = downloadUrl;
-        link.download = `training-infographic-${Date.now()}.png`;
+        link.download = `body-infographic-${Date.now()}.png`;
         link.click();
 
         URL.revokeObjectURL(downloadUrl);
@@ -238,7 +398,7 @@ function Rank({
 
         <div className="report-hero">
           <div>
-            <p className="hint">{reportDate}</p>
+            <p className="hint">{report.reportDate}</p>
             <div className="report-rank">{scoreToRank(overallScore)}</div>
             <h3>{scoreToSamuraiTitle(overallScore)}</h3>
           </div>
@@ -255,8 +415,10 @@ function Rank({
             <strong>{totalXp}</strong>
           </div>
           <div>
-            <span>記録日数</span>
-            <strong>{activeDays}</strong>
+            <span>ランキング</span>
+            <strong>
+              {rankingSummary.rank}/{rankingSummary.total || "-"}
+            </strong>
           </div>
           <div>
             <span>鍛錬 / 稽古</span>
@@ -265,8 +427,8 @@ function Rank({
             </strong>
           </div>
           <div>
-            <span>平均スコア</span>
-            <strong>{averageScore}</strong>
+            <span>歩数平均</span>
+            <strong>{report.stepSummary.average}</strong>
           </div>
         </div>
 
@@ -275,12 +437,12 @@ function Rank({
             <h3>部位別スコア</h3>
             <div className="report-chart">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={partReports}>
+                <BarChart data={report.partReports}>
                   <XAxis dataKey="shortName" tickLine={false} axisLine={false} />
                   <YAxis hide domain={[0, "dataMax + 10"]} />
                   <Tooltip />
                   <Bar dataKey="score" radius={[8, 8, 2, 2]}>
-                    {partReports.map((entry) => (
+                    {report.partReports.map((entry) => (
                       <Cell key={entry.name} fill={entry.color} />
                     ))}
                   </Bar>
@@ -291,22 +453,16 @@ function Rank({
 
           <section className="report-panel">
             <h3>分析サマリー</h3>
-            <p>強み：{topPart?.name || "-"} / {topPart?.rank || "-"}</p>
-            <p>
-              盲点：{weakestPart?.name || "未記録領域"} /{" "}
-              {weakestPart?.rank || "記録待ち"}
-            </p>
-            <p>
-              根拠：過去の鍛錬記録 {trainingRecords.length}件、稽古記録{" "}
-              {martialRecords.length}件のみ。
-            </p>
+            <p>強み：{report.strengthTop5[0]?.name || "-"}</p>
+            <p>盲点：{report.weaknessTop5[0]?.name || "未記録領域"}</p>
+            <p>根拠：{report.dataSources.join(" / ")}</p>
           </section>
         </div>
 
         <section className="report-panel">
           <h3>Best Records</h3>
           <div className="report-table">
-            {partReports.map(({ name, score, rank, bestRecord, color }) => (
+            {report.partReports.map(({ name, score, rank, bestRecord, color }) => (
               <div className="report-row" key={name}>
                 <span className="report-dot" style={{ background: color }} />
                 <strong>{name}</strong>
@@ -371,104 +527,109 @@ function Rank({
   );
 }
 
-function buildInfographicSvg({
-  reportDate,
-  overallScore,
-  totalXp,
-  weightClass,
-  trainingRecords,
-  martialRecords,
-  partReports,
-  strengthTop5,
-  weaknessTop5,
-  patternTags,
-  directions,
-  catchCopies,
-  trainingXp,
-  martialXp,
-  activeDays,
-  trainedParts,
-  averageScore,
-}) {
-  const latestDate = getLatestDate([...trainingRecords, ...martialRecords]);
-  const maxPartScore = Math.max(...partReports.map((item) => item.score), 1);
+function svgText(text, x, y, options = {}) {
+  const {
+    size = 20,
+    weight = 500,
+    fill = NAVY,
+    anchor = "start",
+    family = "system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif",
+  } = options;
 
-  const card = (x, y, width, height, title, icon, body) => `
-    <rect x="${x}" y="${y}" width="${width}" height="${height}" rx="22" fill="#ffffff" stroke="#dbe3ef" stroke-width="2"/>
-    <text x="${x + 26}" y="${y + 44}" font-size="23" font-weight="800" fill="${NAVY}">${icon} ${escapeXml(title)}</text>
+  return `<text x="${x}" y="${y}" font-family="${family}" font-size="${size}" font-weight="${weight}" fill="${fill}" text-anchor="${anchor}">${escapeXml(text)}</text>`;
+}
+
+function svgWrappedText(text, x, y, maxLength, lineHeight, options = {}) {
+  return wrapText(text, maxLength, options.maxLines || 2)
+    .map((line, index) =>
+      svgText(line, x, y + index * lineHeight, {
+        size: options.size || 18,
+        weight: options.weight || 500,
+        fill: options.fill || SLATE,
+      })
+    )
+    .join("");
+}
+
+function buildCard(x, y, width, height, title, body) {
+  return `
+    <rect x="${x}" y="${y}" width="${width}" height="${height}" rx="20" fill="#ffffff" stroke="${BORDER}" stroke-width="2"/>
+    ${svgText(title, x + 26, y + 42, { size: 22, weight: 850 })}
     ${body}
   `;
+}
 
-  const listRows = (items, x, y, width, kind) =>
-    items
-      .map((item, index) => {
-        const score = item.score || 0;
-        const barWidth = Math.max(20, Math.round((score / maxPartScore) * 180));
-        const rowY = y + index * 54;
-        const label =
-          kind === "weakness" && score === 0
-            ? `${item.name}（推測：記録なし）`
-            : item.name;
-
-        return `
-          <text x="${x}" y="${rowY}" font-size="18" font-weight="800" fill="${GOLD}">${index + 1}</text>
-          <text x="${x + 32}" y="${rowY}" font-size="18" font-weight="700" fill="${NAVY}">${escapeXml(label)}</text>
-          <rect x="${x + width - 205}" y="${rowY - 16}" width="180" height="10" rx="5" fill="#e5e7eb"/>
-          <rect x="${x + width - 205}" y="${rowY - 16}" width="${barWidth}" height="10" rx="5" fill="${item.color || GOLD}"/>
-          <text x="${x + width - 18}" y="${rowY}" font-size="16" font-weight="800" text-anchor="end" fill="${NAVY}">${score}</text>
-        `;
-      })
-      .join("");
-
-  const wrappedLines = (lines, x, y, lineHeight = 28, size = 18) =>
-    lines
-      .map((line, index) => {
-        const chunks = chunkText(line, 34);
-        return chunks
-          .map(
-            (chunk, chunkIndex) => `
-              <text x="${x}" y="${y + (index * 3 + chunkIndex) * lineHeight}" font-size="${size}" fill="#334155">${escapeXml(chunk)}</text>
-            `
-          )
-          .join("");
-      })
-      .join("");
-
-  const tags = patternTags
-    .map(
-      (tag, index) => `
-        <rect x="${80 + (index % 2) * 245}" y="${1124 + Math.floor(index / 2) * 48}" width="220" height="34" rx="17" fill="${index % 2 === 0 ? "#eff6ff" : "#fffbeb"}" stroke="${index % 2 === 0 ? "#bfdbfe" : "#fde68a"}"/>
-        <text x="${102 + (index % 2) * 245}" y="${1147 + Math.floor(index / 2) * 48}" font-size="17" font-weight="800" fill="${NAVY}">${escapeXml(tag)}</text>
-      `
-    )
-    .join("");
-
-  const directionLines = wrappedLines(
-    directions.map((item, index) => `${index + 1}. ${item}`),
-    650,
-    1124,
-    24,
-    17
-  );
-
-  const catchcopyLines = catchCopies
-    .map(
-      (copy, index) => `
-        <rect x="${80}" y="${1434 + index * 44}" width="1080" height="34" rx="17" fill="${index % 2 === 0 ? "#f8fafc" : "#fffbeb"}"/>
-        <text x="${104}" y="${1457 + index * 44}" font-size="18" font-weight="700" fill="${NAVY}">${index + 1}. ${escapeXml(copy)}</text>
-      `
-    )
-    .join("");
-
-  const bars = partReports
+function buildRankList(items, x, y, width, maxScore, isWeakness = false) {
+  return items
     .map((item, index) => {
-      const x = 93 + index * 130;
-      const height = Math.max(12, Math.round((item.score / maxPartScore) * 160));
-      const y = 858 - height;
+      const rowY = y + index * 44;
+      const score = item.score || 0;
+      const barWidth = Math.max(8, Math.round((score / maxScore) * 118));
+      const label =
+        isWeakness && score === 0
+          ? `${truncateText(item.name, 13)}（推測）`
+          : truncateText(item.name, 16);
 
       return `
-        <rect x="${x}" y="${y}" width="72" height="${height}" rx="12" fill="${item.color}"/>
-        <text x="${x + 36}" y="884" font-size="15" font-weight="700" fill="#475569" text-anchor="middle">${escapeXml(item.shortName)}</text>
+        ${svgText(index + 1, x, rowY, { size: 17, weight: 850, fill: GOLD })}
+        ${svgText(label, x + 30, rowY, { size: 17, weight: 760 })}
+        <rect x="${x + width - 154}" y="${rowY - 14}" width="118" height="10" rx="5" fill="#e5e7eb"/>
+        <rect x="${x + width - 154}" y="${rowY - 14}" width="${barWidth}" height="10" rx="5" fill="${item.color || GOLD}"/>
+        ${svgText(score, x + width - 8, rowY, { size: 15, weight: 850, anchor: "end" })}
+      `;
+    })
+    .join("");
+}
+
+function buildInfographicSvg({ report, overallScore, totalXp, weightClass, rankingSummary }) {
+  const maxScore = Math.max(...report.partReports.map((item) => item.score), 1);
+  const latestDate = getLatestDate([
+    ...report.partReports,
+  ]);
+  const sourceText = report.dataSources.join(" / ");
+
+  const chartBars = report.partReports
+    .map((item, index) => {
+      const x = 108 + index * 118;
+      const barHeight = Math.max(10, Math.round((item.score / maxScore) * 122));
+      const y = 892 - barHeight;
+
+      return `
+        <rect x="${x}" y="${y}" width="56" height="${barHeight}" rx="12" fill="${item.color}"/>
+        ${svgText(item.shortName, x + 28, 920, { size: 13, weight: 750, fill: SLATE, anchor: "middle" })}
+      `;
+    })
+    .join("");
+
+  const tags = report.patternTags
+    .slice(0, 6)
+    .map((tag, index) => {
+      const x = 104 + (index % 2) * 242;
+      const y = 1080 + Math.floor(index / 2) * 42;
+      return `
+        <rect x="${x}" y="${y}" width="212" height="30" rx="15" fill="${index % 2 ? "#fffbeb" : "#eff6ff"}" stroke="${index % 2 ? "#fde68a" : "#bfdbfe"}"/>
+        ${svgText(truncateText(tag, 12), x + 16, y + 20, { size: 15, weight: 800 })}
+      `;
+    })
+    .join("");
+
+  const directions = report.directions
+    .slice(0, 5)
+    .map((item, index) =>
+      svgText(`${index + 1}. ${truncateText(item, 30)}`, 666, 1080 + index * 36, {
+        size: 15,
+        fill: SLATE,
+      })
+    )
+    .join("");
+
+  const catchCopies = report.catchCopies
+    .slice(0, 5)
+    .map((copy, index) => {
+      const y = 1424 + index * 43;
+      return `
+        <rect x="104" y="${y}" width="1032" height="32" rx="16" fill="${index % 2 ? "#fffbeb" : "#f8fafc"}"/>
+        ${svgText(`${index + 1}. ${truncateText(copy, 46)}`, 126, y + 22, { size: 17, weight: 760 })}
       `;
     })
     .join("");
@@ -476,105 +637,99 @@ function buildInfographicSvg({
   return `
 <svg xmlns="http://www.w3.org/2000/svg" width="1240" height="1754" viewBox="0 0 1240 1754">
   <rect width="1240" height="1754" fill="#ffffff"/>
-  <rect x="0" y="0" width="1240" height="250" fill="${NAVY}"/>
-  <circle cx="1080" cy="64" r="128" fill="#1d4ed8" opacity="0.32"/>
-  <circle cx="950" cy="158" r="86" fill="${GOLD}" opacity="0.18"/>
+  <rect x="0" y="0" width="1240" height="230" fill="${NAVY}"/>
+  <circle cx="1084" cy="50" r="120" fill="#1d4ed8" opacity="0.34"/>
+  <circle cx="948" cy="144" r="76" fill="${GOLD}" opacity="0.18"/>
+  ${svgText("BODY INTELLIGENCE REPORT", 80, 78, { size: 23, weight: 850, fill: GOLD })}
+  ${svgText("身体診断インフォグラフィック", 80, 132, { size: 48, weight: 900, fill: "#ffffff" })}
+  ${svgText("根拠：" + truncateText(sourceText, 52), 80, 176, { size: 18, fill: "#cbd5e1" })}
+  ${svgText(`作成日 ${report.reportDate}`, 80, 210, { size: 16, fill: "#94a3b8" })}
 
-  <text x="80" y="82" font-size="24" font-weight="800" fill="${GOLD}">BODY INTELLIGENCE REPORT</text>
-  <text x="80" y="138" font-size="52" font-weight="900" fill="#ffffff">身体診断インフォグラフィック</text>
-  <text x="80" y="184" font-size="22" fill="#cbd5e1">根拠：過去の鍛錬記録・稽古記録のみ / 推測は推測と明記</text>
-  <text x="80" y="220" font-size="18" fill="#94a3b8">作成日 ${escapeXml(reportDate)} / 最終記録 ${escapeXml(latestDate)}</text>
-
-  ${card(
+  ${buildCard(
     80,
-    294,
+    276,
     1080,
-    178,
-    "身体の要約",
-    "◉",
+    164,
+    "● 身体の要約",
     `
-      <text x="116" y="380" font-size="46" font-weight="900" fill="${NAVY}">${Math.round(overallScore || 0)}</text>
-      <text x="116" y="418" font-size="17" fill="#64748b">総合スコア</text>
-      <text x="338" y="380" font-size="46" font-weight="900" fill="${NAVY}">${escapeXml(totalXp)}</text>
-      <text x="338" y="418" font-size="17" fill="#64748b">累計XP</text>
-      <text x="560" y="380" font-size="46" font-weight="900" fill="${NAVY}">${activeDays}</text>
-      <text x="560" y="418" font-size="17" fill="#64748b">記録日数</text>
-      <text x="782" y="380" font-size="28" font-weight="900" fill="${NAVY}">${escapeXml(weightClass || "-")}</text>
-      <text x="782" y="418" font-size="17" fill="#64748b">階級</text>
-      <text x="972" y="380" font-size="32" font-weight="900" fill="${NAVY}">${trainedParts}/${partReports.length}</text>
-      <text x="972" y="418" font-size="17" fill="#64748b">鍛錬部位</text>
+      ${svgText(Math.round(overallScore || 0), 118, 358, { size: 42, weight: 900 })}
+      ${svgText("総合スコア", 118, 394, { size: 15, fill: SLATE })}
+      ${svgText(totalXp, 306, 358, { size: 42, weight: 900 })}
+      ${svgText("累計XP", 306, 394, { size: 15, fill: SLATE })}
+      ${svgText(report.bodySummary.latestWeight, 494, 358, { size: 32, weight: 900 })}
+      ${svgText(`体重 ${report.bodySummary.weightDelta}`, 494, 394, { size: 15, fill: SLATE })}
+      ${svgText(report.stepSummary.average, 694, 358, { size: 34, weight: 900 })}
+      ${svgText("平均歩数", 694, 394, { size: 15, fill: SLATE })}
+      ${svgText(`${rankingSummary.rank}/${rankingSummary.total || "-"}`, 884, 358, { size: 32, weight: 900 })}
+      ${svgText("ランキング", 884, 394, { size: 15, fill: SLATE })}
+      ${svgText(weightClass || "-", 1038, 358, { size: 24, weight: 900, anchor: "middle" })}
+      ${svgText("階級", 1038, 394, { size: 15, fill: SLATE, anchor: "middle" })}
     `
   )}
 
-  ${card(
+  ${buildCard(
     80,
-    502,
+    474,
     520,
-    330,
-    "強みTOP5",
-    "▲",
-    listRows(strengthTop5, 116, 590, 440, "strength")
+    292,
+    "▲ 強みTOP5",
+    buildRankList(report.strengthTop5, 116, 548, 440, maxScore)
   )}
 
-  ${card(
+  ${buildCard(
     640,
-    502,
+    474,
     520,
-    330,
-    "弱み・盲点TOP5",
-    "▼",
-    listRows(weaknessTop5, 676, 590, 440, "weakness")
+    292,
+    "▼ 弱み・盲点TOP5",
+    buildRankList(report.weaknessTop5, 676, 548, 440, maxScore, true)
   )}
 
-  ${card(
+  ${buildCard(
     80,
-    862,
+    796,
     1080,
-    200,
-    "鍛錬スコア図解",
-    "▰",
+    180,
+    "■ 鍛錬スコア図解",
     `
-      ${bars}
-      <text x="1000" y="940" font-size="48" font-weight="900" fill="${GOLD}" text-anchor="middle">${averageScore}</text>
-      <text x="1000" y="974" font-size="17" fill="#64748b" text-anchor="middle">平均スコア</text>
+      ${chartBars}
+      ${svgText(report.averageScore, 1024, 870, { size: 44, weight: 900, fill: GOLD, anchor: "middle" })}
+      ${svgText("平均スコア", 1024, 904, { size: 15, fill: SLATE, anchor: "middle" })}
     `
   )}
 
-  ${card(
+  ${buildCard(
     80,
-    1092,
+    1006,
     520,
-    260,
-    "身体パターンの特徴",
-    "◆",
+    264,
+    "◆ 身体パターンの特徴",
     `
       ${tags}
-      <text x="102" y="1268" font-size="17" fill="#475569">※記録量・部位分布からの分類。未記録領域は推測を含む。</text>
-      <text x="102" y="1306" font-size="17" fill="#475569">鍛錬XP ${trainingXp} / 稽古XP ${martialXp}</text>
+      ${svgWrappedText(`身体推移：${report.bodySummary.label} / 体脂肪 ${report.bodySummary.bodyFatDelta}`, 104, 1216, 28, 22, { size: 15, maxLines: 2 })}
+      ${svgWrappedText(`日誌要約：${report.journalHint ? truncateText(report.journalHint, 36) : "未記録"}`, 104, 1252, 28, 22, { size: 15, maxLines: 2 })}
     `
   )}
 
-  ${card(
+  ${buildCard(
     640,
-    1092,
+    1006,
     520,
-    260,
-    "今後伸ばすべき方向性",
-    "→",
-    directionLines
+    264,
+    "→ 今後伸ばすべき方向性",
+    directions
   )}
 
-  ${card(
+  ${buildCard(
     80,
-    1382,
+    1302,
     1080,
-    290,
-    "私を一言で表すキャッチコピー5案",
-    "✦",
-    catchcopyLines
+    322,
+    "✦ 私を一言で表すキャッチコピー5案",
+    catchCopies
   )}
 
-  <text x="80" y="1712" font-size="15" fill="#64748b">過度な美化を避け、記録から確認できる強み・弱みを客観的に整理。推測箇所は明記。</text>
+  ${svgText("ランキング・身体推移・実績・日誌・称号・歩数を加味。未記録領域の判断は推測として明記。過度な美化は禁止。", 80, 1688, { size: 15, fill: SLATE })}
 </svg>`;
 }
 

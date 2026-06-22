@@ -66,6 +66,13 @@ function AppRoutes(props) {
         weightClass={props.weightClass}
         trainingRecords={props.trainingRecords}
         martialRecords={props.martialRecords}
+        bodyRecords={props.bodyRecords}
+        journalRecords={props.journalRecords}
+        stepRecords={props.stepRecords}
+        unlockedAchievements={props.unlockedAchievements}
+        unlockedTitles={props.unlockedTitles}
+        selectedTitle={props.selectedTitle}
+        combatPower={props.combatPower}
         getPartBestScore={props.getPartBestScore}
         getBestRecord={props.getBestRecord}
         getRecordScore={props.getRecordScore}
