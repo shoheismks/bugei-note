@@ -745,8 +745,8 @@ function formatNumber(value) {
 function buildConsultingMetric(label, value, x, y, width) {
   return `
     <line x1="${x}" y1="${y - 18}" x2="${x}" y2="${y + 52}" stroke="${GOLD}" stroke-width="3"/>
-    ${svgText(truncateText(value, 10), x + 18, y + 14, { size: 28, weight: 900 })}
-    ${svgText(label, x + 18, y + 44, { size: 13, weight: 700, fill: SLATE })}
+    ${svgText(truncateText(value, 9), x + 16, y + 12, { size: 25, weight: 900 })}
+    ${svgText(label, x + 16, y + 42, { size: 12, weight: 700, fill: SLATE })}
     <line x1="${x + width}" y1="${y - 12}" x2="${x + width}" y2="${y + 50}" stroke="#eef2f7"/>
   `;
 }
@@ -841,12 +841,12 @@ function buildInfographicSvgV2({
   const tags = report.patternTags
     .slice(0, 6)
     .map((tag, index) => {
-      const x = 112 + (index % 3) * 154;
-      const y = 1192 + Math.floor(index / 3) * 34;
+      const x = 112 + (index % 2) * 226;
+      const y = 1192 + Math.floor(index / 2) * 34;
       return `
-        <rect x="${x}" y="${y}" width="138" height="26" rx="13" fill="${index % 2 ? "#fffbeb" : "#eff6ff"}" stroke="${index % 2 ? "#f4d37a" : "#bfdbfe"}"/>
-        ${svgText(truncateText(tag, 7), x + 12, y + 18, {
-          size: 12,
+        <rect x="${x}" y="${y}" width="206" height="26" rx="13" fill="${index % 2 ? "#fffbeb" : "#eff6ff"}" stroke="${index % 2 ? "#f4d37a" : "#bfdbfe"}"/>
+        ${svgText(tag, x + 12, y + 18, {
+          size: 11,
           weight: 800,
         })}
       `;
@@ -919,20 +919,20 @@ function buildInfographicSvgV2({
     80,
     294,
     1080,
-    146,
+    156,
     "身体の要約",
     `
-      ${buildConsultingMetric("総合スコア", formatNumber(Math.round(overallScore || 0)), 116, 354, 170)}
-      ${buildConsultingMetric("累計XP", formatNumber(totalXp), 304, 354, 170)}
-      ${buildConsultingMetric(`体重 ${report.bodySummary.weightDelta}`, report.bodySummary.latestWeight, 492, 354, 170)}
-      ${buildConsultingMetric("平均歩数", formatNumber(report.stepSummary.average), 680, 354, 170)}
-      ${buildConsultingMetric("ランキング", `${rankingSummary.rank}/${rankingSummary.total || "-"}`, 868, 354, 150)}
-      ${svgText(truncateText(weightClass || "-", 8), 1058, 368, {
+      ${buildConsultingMetric("総合スコア", formatNumber(Math.round(overallScore || 0)), 114, 360, 156)}
+      ${buildConsultingMetric("累計XP", formatNumber(totalXp), 284, 360, 156)}
+      ${buildConsultingMetric(`体重 ${report.bodySummary.weightDelta}`, report.bodySummary.latestWeight, 454, 360, 156)}
+      ${buildConsultingMetric("平均歩数", formatNumber(report.stepSummary.average), 624, 360, 156)}
+      ${buildConsultingMetric("ランキング", `${rankingSummary.rank}/${rankingSummary.total || "-"}`, 794, 360, 156)}
+      ${svgText(truncateText(weightClass || "-", 9), 1046, 372, {
         size: 20,
         weight: 900,
         anchor: "middle",
       })}
-      ${svgText("階級", 1058, 398, {
+      ${svgText("階級", 1046, 402, {
         size: 13,
         weight: 700,
         fill: SLATE,
@@ -996,22 +996,22 @@ function buildInfographicSvgV2({
     80,
     1124,
     520,
-    244,
+    284,
     "身体パターンの特徴",
     `
       ${tags}
-      ${svgWrappedText(`身体推移：${report.bodySummary.label} / 体脂肪 ${report.bodySummary.bodyFatDelta}`, 112, 1286, 30, 18, { size: 12, maxLines: 2 })}
-      ${svgWrappedText(`日誌要約：${report.journalHint ? truncateText(report.journalHint, 32) : "未記録"}`, 112, 1328, 30, 18, { size: 12, maxLines: 1 })}
+      ${svgWrappedText(`身体推移：${report.bodySummary.label} / 体脂肪 ${report.bodySummary.bodyFatDelta}`, 112, 1312, 30, 18, { size: 12, maxLines: 2 })}
+      ${svgWrappedText(`日誌要約：${report.journalHint ? truncateText(report.journalHint, 32) : "未記録"}`, 112, 1354, 30, 18, { size: 12, maxLines: 1 })}
     `
   )}
 
-  ${buildCard(640, 1124, 520, 244, "今後伸ばすべき方向性", directions)}
+  ${buildCard(640, 1124, 520, 284, "今後伸ばすべき方向性", directions)}
 
   ${buildCard(
     80,
-    1392,
+    1428,
     1080,
-    270,
+    244,
     "私を一言で表すキャッチコピー 5案",
     catchCopies
   )}

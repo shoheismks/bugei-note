@@ -18,7 +18,7 @@ function Profile({ profile, saveProfile }) {
   return (
     <main>
       <section className="card hero">
-        <h2>館主プロフィール</h2>
+        <h2>プロフィール</h2>
         <p className="hint">
           ランキング・仲間機能で表示される情報です。
         </p>

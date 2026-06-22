@@ -7,6 +7,7 @@ function Navigation({ setTab }) {
       <button onClick={() => setTab("training")}>鍛錬</button>
       <button onClick={() => setTab("rank")}>レポート</button>
       <button onClick={() => setTab("ranking")}>ランキング</button>
+      <button onClick={() => setTab("rivals")}>ライバル</button>
       <button onClick={() => setTab("achievement")}>実績</button>
       <button onClick={() => setTab("martial")}>稽古</button>
       <button onClick={() => setTab("journal")}>日誌</button>
