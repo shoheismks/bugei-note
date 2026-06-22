@@ -28,7 +28,8 @@ function Login() {
   return (
     <main>
       <section className="card hero">
-        <h2>🏯 武芸手帳ログイン</h2>
+        <h2>SHUHARI Login</h2>
+        <p className="hint">Learn. Adapt. Transcend.</p>
         <p className="hint">
           メールアドレスにログインリンクを送ります。
         </p>

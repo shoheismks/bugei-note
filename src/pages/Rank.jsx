@@ -368,7 +368,7 @@ function Rank({
         const downloadUrl = URL.createObjectURL(pngBlob);
         const link = document.createElement("a");
         link.href = downloadUrl;
-        link.download = `body-infographic-${Date.now()}.png`;
+        link.download = `body-analysis-${Date.now()}.png`;
         link.click();
 
         URL.revokeObjectURL(downloadUrl);
@@ -384,8 +384,8 @@ function Rank({
       <section className="card report-card">
         <div className="report-toolbar">
           <div>
-            <p className="report-eyebrow">Body Intelligence Infographic</p>
-            <h2>身体診断レポート</h2>
+            <p className="report-eyebrow">Body Intelligence Analysis</p>
+            <h2>身体診断アナリシス</h2>
           </div>
 
           <button
@@ -841,12 +841,12 @@ function buildInfographicSvgV2({
   const tags = report.patternTags
     .slice(0, 6)
     .map((tag, index) => {
-      const x = 112 + (index % 2) * 226;
-      const y = 1196 + Math.floor(index / 2) * 36;
+      const x = 112 + (index % 3) * 154;
+      const y = 1192 + Math.floor(index / 3) * 34;
       return `
-        <rect x="${x}" y="${y}" width="204" height="28" rx="14" fill="${index % 2 ? "#fffbeb" : "#eff6ff"}" stroke="${index % 2 ? "#f4d37a" : "#bfdbfe"}"/>
-        ${svgText(truncateText(tag, 11), x + 14, y + 19, {
-          size: 13,
+        <rect x="${x}" y="${y}" width="138" height="26" rx="13" fill="${index % 2 ? "#fffbeb" : "#eff6ff"}" stroke="${index % 2 ? "#f4d37a" : "#bfdbfe"}"/>
+        ${svgText(truncateText(tag, 7), x + 12, y + 18, {
+          size: 12,
           weight: 800,
         })}
       `;
@@ -858,15 +858,15 @@ function buildInfographicSvgV2({
     .map(
       (item, index) => `
         <g>
-          <circle cx="676" cy="${1198 + index * 32}" r="10" fill="${NAVY}"/>
-          ${svgText(index + 1, 676, 1203 + index * 32, {
+          <circle cx="676" cy="${1190 + index * 31}" r="9" fill="${NAVY}"/>
+          ${svgText(index + 1, 676, 1194 + index * 31, {
             size: 11,
             weight: 900,
             fill: "#ffffff",
             anchor: "middle",
           })}
-          ${svgText(truncateText(item, 31), 696, 1203 + index * 32, {
-            size: 14,
+          ${svgText(truncateText(item, 28), 696, 1195 + index * 31, {
+            size: 13,
             weight: 650,
             fill: SLATE,
           })}
@@ -877,7 +877,7 @@ function buildInfographicSvgV2({
   const catchCopies = report.catchCopies
     .slice(0, 5)
     .map((copy, index) => {
-      const y = 1430 + index * 42;
+      const y = 1448 + index * 39;
       return `
         <rect x="108" y="${y}" width="1024" height="30" rx="6" fill="${index % 2 ? "#fffbeb" : "#f8fafc"}"/>
         <rect x="108" y="${y}" width="4" height="30" rx="2" fill="${index % 2 ? GOLD : "#2563eb"}"/>
@@ -996,22 +996,22 @@ function buildInfographicSvgV2({
     80,
     1124,
     520,
-    220,
+    244,
     "身体パターンの特徴",
     `
       ${tags}
-      ${svgWrappedText(`身体推移：${report.bodySummary.label} / 体脂肪 ${report.bodySummary.bodyFatDelta}`, 112, 1306, 28, 18, { size: 12, maxLines: 2 })}
-      ${svgWrappedText(`日誌要約：${report.journalHint ? truncateText(report.journalHint, 34) : "未記録"}`, 112, 1334, 28, 18, { size: 12, maxLines: 1 })}
+      ${svgWrappedText(`身体推移：${report.bodySummary.label} / 体脂肪 ${report.bodySummary.bodyFatDelta}`, 112, 1286, 30, 18, { size: 12, maxLines: 2 })}
+      ${svgWrappedText(`日誌要約：${report.journalHint ? truncateText(report.journalHint, 32) : "未記録"}`, 112, 1328, 30, 18, { size: 12, maxLines: 1 })}
     `
   )}
 
-  ${buildCard(640, 1124, 520, 220, "今後伸ばすべき方向性", directions)}
+  ${buildCard(640, 1124, 520, 244, "今後伸ばすべき方向性", directions)}
 
   ${buildCard(
     80,
-    1360,
+    1392,
     1080,
-    294,
+    270,
     "私を一言で表すキャッチコピー 5案",
     catchCopies
   )}

@@ -1,7 +1,7 @@
 function Backup() {
   const exportData = () => {
     const data = {
-      appName: "武芸手帳",
+      appName: "SHUHARI",
       version: "1.1",
       exportedAt: new Date().toISOString(),
 
@@ -169,7 +169,7 @@ function Backup() {
         <h2>💾 バックアップ</h2>
 
         <p className="hint">
-          武芸手帳の記録をJSONファイルとして保存・復元します。
+          SHUHARIの記録をJSONファイルとして保存・復元します。
         </p>
       </section>
 
