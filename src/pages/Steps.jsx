@@ -27,7 +27,7 @@ function Steps({
             stepRecords={stepRecords}
             />
       <section className="card hero">
-        <h2>🚶 歩数記録</h2>
+        <h2>歩数記録</h2>
 
         <div className="big-rank">
           {todaySteps}歩

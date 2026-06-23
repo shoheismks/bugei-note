@@ -5,7 +5,7 @@ function AchievementPopup({ achievement }) {
     <div className="achievement-popup">
       <div className="achievement-popup-inner">
         <div className="popup-title">
-          🏆 新実績解除
+          新実績解除
         </div>
 
         <h2>{achievement.name}</h2>

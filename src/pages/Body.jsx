@@ -34,7 +34,7 @@ function Body({
       />
 
       <section className="card">
-        <h2>🎯 身体目標</h2>
+        <h2>身体目標</h2>
 
         <input
           type="number"

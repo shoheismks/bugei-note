@@ -31,7 +31,7 @@ function BodyChartCard({
   if (records.length === 0) {
     return (
       <section className="card">
-        <h2>📈 身体推移</h2>
+        <h2>身体推移</h2>
         <p className="hint">
           体重・体脂肪率を記録するとグラフが表示されます。
         </p>
@@ -101,10 +101,10 @@ function BodyChartCard({
 
   return (
     <section className="card">
-      <h2>📈 身体推移</h2>
+      <h2>身体推移</h2>
 
       <div className="best-record">
-        <p>🏆 進捗率：{progressPercent}%</p>
+        <p>進捗率：{progressPercent}%</p>
 
         <div className="xp-bar">
           <div
@@ -116,12 +116,12 @@ function BodyChartCard({
         </div>
 
         <p>
-          📉 現在ペース：
+          現在ペース：
           {weeklyLoss > 0 ? weeklyLoss.toFixed(2) : "-"}
           kg/週
         </p>
 
-        <p>🏁 予想到達日：{estimatedDate}</p>
+        <p>予想到達日：{estimatedDate}</p>
 
         <p>開始体重：{startWeight}kg</p>
         <p>現在体重：{currentWeight}kg</p>
@@ -136,7 +136,7 @@ function BodyChartCard({
 
         <hr />
 
-        <p>🎯 目標体脂肪率：{safeTargetBodyFat}%</p>
+        <p>目標体脂肪率：{safeTargetBodyFat}%</p>
         <p>現在体脂肪率：{currentBodyFat}%</p>
         <p>あと：{remainingBodyFat}%</p>
         <p>開始時：{startBodyFat}%</p>

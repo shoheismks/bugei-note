@@ -38,10 +38,10 @@ function MartialArts({
   const joXp = getXpByArt("杖術");
 
   const arts = [
-    { name: "居合", xp: iaiXp, icon: "⚔" },
-    { name: "剣術", xp: kenjutsuXp, icon: "🗡" },
-    { name: "柔術", xp: jujutsuXp, icon: "🥋" },
-    { name: "杖術", xp: joXp, icon: "🪵" },
+    { name: "居合", xp: iaiXp, icon: "" },
+    { name: "剣術", xp: kenjutsuXp, icon: "" },
+    { name: "柔術", xp: jujutsuXp, icon: "" },
+    { name: "杖術", xp: joXp, icon: "" },
   ];
 
   const unlockedMartialAchievements = martialAchievements.filter(
@@ -69,7 +69,7 @@ function MartialArts({
   return (
     <main>
       <section className="card hero">
-        <h2>⚔ 総合武芸段位</h2>
+        <h2>総合武芸段位</h2>
 
         <div className="big-rank">{martialRank}</div>
 
@@ -178,7 +178,7 @@ function MartialArts({
 
         {unlockedMartialAchievements.map((achievement) => (
           <div className="achievement-card" key={achievement.id}>
-            <h3>🏆 {achievement.name}</h3>
+            <h3>{achievement.name}</h3>
             <p>{achievement.rarity}</p>
             <p className="hint">館主コメント</p>
             <p>{achievement.comment}</p>

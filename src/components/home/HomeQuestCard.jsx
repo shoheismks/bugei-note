@@ -26,7 +26,7 @@ function HomeQuestCard({
 
   return (
     <section className="card">
-      <h2>📜 本日の任務</h2>
+      <h2>本日の任務</h2>
 
       <div className="big-rank">{percent}%</div>
 
@@ -39,7 +39,7 @@ function HomeQuestCard({
 
       {quests.map((quest) => (
         <p key={quest.title}>
-          {quest.done ? "✅" : "⬜"} {quest.title}
+          {quest.done ? "" : ""} {quest.title}
         </p>
       ))}
     </section>

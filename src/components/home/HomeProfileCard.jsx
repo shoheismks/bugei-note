@@ -13,7 +13,7 @@ function HomeProfileCard({
 
   return (
     <section className="card hero">
-      <h2>🏯 武芸館</h2>
+      <h2>武芸館</h2>
 
       <p>館主：下越翔平</p>
 

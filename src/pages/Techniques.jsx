@@ -128,7 +128,7 @@ function Techniques({
   return (
     <main>
       <section className="card hero">
-        <h2>📚 武芸図鑑</h2>
+        <h2>武芸図鑑</h2>
 
         <div className="big-rank">{learnedPercent}%</div>
 
@@ -158,15 +158,15 @@ function Techniques({
       </section>
 
       <section className="card">
-        <h2>🏯 流派進捗</h2>
+        <h2>流派進捗</h2>
 
         {artProgressList.map((art) => (
           <div key={art.name} className="rank-card">
             <h3>
               {art.percent >= 100
-                ? `🏆 ${art.name}皆伝`
+                ? `${art.name}皆伝`
                 : art.percent >= 80
-                ? `📘 ${art.name}研究家`
+                ? `${art.name}研究家`
                 : art.name}
             </h3>
 
@@ -256,7 +256,7 @@ function Techniques({
 
       {selectedTechnique && (
         <section className="card">
-          <h2>📖 {selectedTechnique.name}</h2>
+          <h2>{selectedTechnique.name}</h2>
 
           <p>流派：{selectedTechnique.art}</p>
 

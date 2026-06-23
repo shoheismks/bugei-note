@@ -14,7 +14,7 @@ function BudoJournal({
   return (
     <main>
       <section className="card">
-        <h2>📖 武芸日誌</h2>
+        <h2>武芸日誌</h2>
 
         <textarea
           placeholder="今日の気づき・課題・身体感覚を書く"
@@ -29,7 +29,7 @@ function BudoJournal({
       </section>
 
       <section className="card">
-        <h2>🔍 日誌検索</h2>
+        <h2>日誌検索</h2>
 
         <input
           type="text"

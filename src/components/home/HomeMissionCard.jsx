@@ -13,7 +13,7 @@ function HomeMissionCard({
 
   return (
     <section className="card">
-      <h2>🎯 本日のおすすめ任務</h2>
+      <h2>本日のおすすめ任務</h2>
 
       <div className="big-rank">
         {safeRecommendedMission.title}
@@ -50,7 +50,7 @@ function HomeMissionCard({
 
       <hr />
 
-      <h2>📜 今日の任務</h2>
+      <h2>今日の任務</h2>
 
       <div className="big-rank">{missionCount}/4</div>
 

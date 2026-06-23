@@ -26,7 +26,7 @@ function HomeCombatCard({
 
   return (
     <section className="card">
-      <h2>⚔ 今日の戦闘力</h2>
+      <h2>今日の戦闘力</h2>
 
       <div className="big-rank">{safeCombatPower.total}</div>
 
@@ -81,7 +81,7 @@ function HomeCombatCard({
 
       <hr />
 
-      <h2>🏯 館主レベル</h2>
+      <h2>館主レベル</h2>
 
       <div className="big-rank">
         Lv.{safeLevelData.level}

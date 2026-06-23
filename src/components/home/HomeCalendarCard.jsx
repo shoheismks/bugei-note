@@ -31,7 +31,7 @@ function HomeCalendarCard({
 
   return (
     <section className="card">
-      <h2>🏯 館主カレンダー</h2>
+      <h2>館主カレンダー</h2>
 
       <div
         style={{

@@ -50,7 +50,7 @@ function Missions({
   return (
     <main>
       <section className="card hero">
-        <h2>📜 今日の館主ミッション</h2>
+        <h2>今日の館主ミッション</h2>
 
         <div className="big-rank">
           {completed}/{missions.length}
@@ -64,7 +64,7 @@ function Missions({
       {missions.map((mission, index) => (
         <section className="card" key={index}>
           <h3>
-            {mission.done ? "✅" : "□"} {mission.name}
+            {mission.done ? "" : "□"} {mission.name}
           </h3>
 
           <p className="hint">

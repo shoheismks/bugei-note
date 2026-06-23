@@ -86,9 +86,9 @@ function Ranking() {
   };
 
   const getMedal = (index) => {
-    if (index === 0) return "🥇";
-    if (index === 1) return "🥈";
-    if (index === 2) return "🥉";
+    if (index === 0) return "";
+    if (index === 1) return "";
+    if (index === 2) return "";
     return `#${index + 1}`;
   };
 
@@ -108,7 +108,7 @@ function Ranking() {
   return (
     <main>
       <section className="card hero">
-        <h2>🏆 武芸ランキング</h2>
+        <h2>武芸ランキング</h2>
         <p>全国の武芸者たち</p>
 
         <div className="big-rank">

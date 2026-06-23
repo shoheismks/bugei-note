@@ -152,7 +152,7 @@ function Rivals() {
   return (
     <main>
       <section className="card hero">
-        <h2>⚔️ ライバル</h2>
+        <h2>ライバル</h2>
         <p>登録した武芸者との比較</p>
 
         <div className="big-rank">{rivals.length}人</div>

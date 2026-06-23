@@ -166,7 +166,7 @@ function Backup() {
   return (
     <main>
       <section className="card hero">
-        <h2>💾 バックアップ</h2>
+        <h2>バックアップ</h2>
 
         <p className="hint">
           SHU・HA・RIの記録をJSONファイルとして保存・復元します。

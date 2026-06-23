@@ -6,7 +6,7 @@ function Titles({ unlockedTitles }) {
   return (
     <main>
       <section className="card hero">
-        <h2>🏅 称号図鑑</h2>
+        <h2>称号図鑑</h2>
 
         <div className="big-rank">
           {safeUnlockedTitles.length}/{titles.length}
@@ -29,7 +29,7 @@ function Titles({ unlockedTitles }) {
             }}
           >
             <h3>
-              {unlocked ? "🔓" : "🔒"}{" "}
+              {unlocked ? "" : ""}{" "}
               {unlocked ? title.name : "？？？"}
             </h3>
 

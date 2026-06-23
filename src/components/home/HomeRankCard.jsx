@@ -61,7 +61,7 @@ function HomeRankCard({
 
       <hr />
 
-      <h2>⚔ 総合武芸段位</h2>
+      <h2>総合武芸段位</h2>
 
       <div className="big-rank">
         {martialRank}
@@ -75,10 +75,10 @@ function HomeRankCard({
 
       <h2>流派別段位</h2>
 
-      <p>⚔ 居合：{martialXpToRank(iaiXp)}</p>
-      <p>🗡 剣術：{martialXpToRank(kenjutsuXp)}</p>
-      <p>🥋 柔術：{martialXpToRank(jujutsuXp)}</p>
-      <p>🪵 杖術：{martialXpToRank(joXp)}</p>
+      <p>居合：{martialXpToRank(iaiXp)}</p>
+      <p>剣術：{martialXpToRank(kenjutsuXp)}</p>
+      <p>柔術：{martialXpToRank(jujutsuXp)}</p>
+      <p>杖術：{martialXpToRank(joXp)}</p>
     </section>
   );
 }

@@ -25,7 +25,7 @@ function StepStatsCard({ stepRecords }) {
 
   return (
     <section className="card">
-      <h2>📊 歩数統計</h2>
+      <h2>歩数統計</h2>
 
       <p>今日：{todaySteps.toLocaleString()}歩</p>
 

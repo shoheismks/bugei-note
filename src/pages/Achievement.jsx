@@ -2,7 +2,7 @@ function Achievement({ unlockedAchievements }) {
   return (
     <main>
       <section className="card hero">
-        <h2>🏆 実績</h2>
+        <h2>実績</h2>
 
         <div className="big-rank">
           {unlockedAchievements.length}
@@ -22,7 +22,7 @@ function Achievement({ unlockedAchievements }) {
 
       {unlockedAchievements.map((achievement) => (
         <section className="card achievement-card" key={achievement.id}>
-          <h3>🏆 {achievement.name}</h3>
+          <h3>{achievement.name}</h3>
 
           <p>{achievement.rarity}</p>
 

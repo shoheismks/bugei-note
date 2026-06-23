@@ -641,7 +641,7 @@ function buildInfographicSvg({ report, overallScore, totalXp, weightClass, ranki
   <circle cx="1084" cy="50" r="120" fill="#1d4ed8" opacity="0.34"/>
   <circle cx="948" cy="144" r="76" fill="${GOLD}" opacity="0.18"/>
   ${svgText("BODY INTELLIGENCE REPORT", 80, 78, { size: 23, weight: 850, fill: GOLD })}
-  ${svgText("身体診断アナリシス", 80, 132, { size: 48, weight: 900, fill: "#ffffff" })}
+  ${svgText("身体診断アナリシス", 80, 132, { size: 36, weight: 900, fill: "#ffffff" })}
   ${svgText("根拠：" + truncateText(sourceText, 52), 80, 176, { size: 18, fill: "#cbd5e1" })}
   ${svgText(`作成日 ${report.reportDate}`, 80, 210, { size: 16, fill: "#94a3b8" })}
 
@@ -725,7 +725,7 @@ function buildInfographicSvg({ report, overallScore, totalXp, weightClass, ranki
     1302,
     1080,
     322,
-    "✦ 私を一言で表すキャッチコピー5案",
+    "私を一言で表すキャッチコピー5案",
     catchCopies
   )}
 
@@ -902,7 +902,7 @@ function buildInfographicSvgV2({
     fill: GOLD,
   })}
   ${svgText("身体診断アナリシス", 104, 142, {
-    size: 45,
+    size: 36,
     weight: 900,
     fill: "#ffffff",
   })}

@@ -3,7 +3,7 @@ function HomeStreakCard({
 }) {
   return (
     <section className="card">
-      <h2>🔥 連続稽古日数</h2>
+      <h2>連続稽古日数</h2>
 
       <div className="big-rank">
         {trainingStreak}日

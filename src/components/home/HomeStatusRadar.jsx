@@ -66,7 +66,7 @@ function HomeStatusRadar({ combatPower }) {
 
   return (
     <section className="card">
-      <h2>📊 館主ステータス</h2>
+      <h2>館主ステータス</h2>
 
       <div className="big-rank">{masterType}</div>
 
@@ -113,11 +113,11 @@ function HomeStatusRadar({ combatPower }) {
       </div>
 
       <div className="best-record">
-        <p>💪 筋力 {safeCombatPower.strength}</p>
-        <p>⚔ 武芸 {safeCombatPower.budo}</p>
-        <p>🔥 継続 {safeCombatPower.continuity}</p>
-        <p>📚 知識 {safeCombatPower.knowledge}</p>
-        <p>🧠 身体操作 {safeCombatPower.bodyControl}</p>
+        <p>筋力 {safeCombatPower.strength}</p>
+        <p>武芸 {safeCombatPower.budo}</p>
+        <p>継続 {safeCombatPower.continuity}</p>
+        <p>知識 {safeCombatPower.knowledge}</p>
+        <p>身体操作 {safeCombatPower.bodyControl}</p>
       </div>
 
       <p className="hint">
