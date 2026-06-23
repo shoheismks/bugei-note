@@ -103,7 +103,7 @@ function BodyChartCard({
     <section className="card">
       <h2>身体推移</h2>
 
-      <div className="best-record">
+      <div className="best-record body-summary">
         <p>進捗率：{progressPercent}%</p>
 
         <div className="xp-bar">
@@ -150,7 +150,7 @@ function BodyChartCard({
 
       <h3>体重</h3>
 
-      <div className="chart-box">
+      <div className="chart-box body-weight-chart">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={records}>
             <CartesianGrid strokeDasharray="3 3" />
@@ -170,7 +170,7 @@ function BodyChartCard({
 
       <h3>体脂肪率</h3>
 
-      <div className="chart-box">
+      <div className="chart-box body-fat-chart">
         <ResponsiveContainer width="100%" height="100%">
           <LineChart data={records}>
             <CartesianGrid strokeDasharray="3 3" />

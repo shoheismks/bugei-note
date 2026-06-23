@@ -524,6 +524,101 @@ main main {
   line-height: 1;
 }
 
+.body-status-card {
+  padding: 24px;
+}
+
+.body-status-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.body-status-grid div {
+  padding: 14px 12px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: var(--radius-sm);
+  background: rgba(15, 23, 42, 0.48);
+}
+
+.body-status-grid span,
+.body-status-grid small {
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.body-status-grid strong {
+  display: inline-block;
+  margin-top: 5px;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(30px, 9vw, 44px);
+  font-weight: 880;
+  line-height: 1;
+}
+
+.body-summary {
+  display: grid;
+  gap: 6px;
+  padding: 16px;
+}
+
+.body-weight-chart {
+  height: 390px;
+  min-height: 340px;
+}
+
+.body-fat-chart {
+  height: 240px;
+  min-height: 210px;
+}
+
+.goal-card {
+  border-color: rgba(96, 165, 250, 0.2);
+}
+
+.body-history-list {
+  display: grid;
+  gap: 10px;
+}
+
+.body-history-item {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  gap: 4px 12px;
+  align-items: center;
+  padding: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: var(--radius-sm);
+  background: rgba(15, 23, 42, 0.48);
+}
+
+.body-history-item p,
+.body-history-item span {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.body-history-item strong {
+  grid-row: span 2;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 850;
+}
+
+.body-history-item button {
+  grid-column: 1 / -1;
+  min-height: 38px;
+  margin-top: 6px;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  background: transparent;
+  color: var(--muted);
+}
+
 .dev-field {
   margin: 12px 0;
   padding: 12px;

@@ -25,15 +25,53 @@ function Body({
     alert("目標を保存しました");
   };
 
+  const sortedRecords = [...(bodyRecords || [])].sort(
+    (a, b) => new Date(a.date) - new Date(b.date)
+  );
+  const latestRecord = sortedRecords[sortedRecords.length - 1];
+  const currentWeight = latestRecord?.weight || "-";
+  const currentBodyFat = latestRecord?.bodyFat || "-";
+  const weightGap =
+    latestRecord?.weight && targetWeight
+      ? (Number(latestRecord.weight) - Number(targetWeight)).toFixed(1)
+      : "-";
+
   return (
     <main>
+      <section className="card product-card body-status-card">
+        <p className="metric-label">BODY STATUS</p>
+        <div className="body-status-grid">
+          <div>
+            <span>現在体重</span>
+            <strong>{currentWeight}</strong>
+            <small>kg</small>
+          </div>
+          <div>
+            <span>現在体脂肪</span>
+            <strong>{currentBodyFat}</strong>
+            <small>%</small>
+          </div>
+          <div>
+            <span>目標体重</span>
+            <strong>{targetWeight}</strong>
+            <small>kg</small>
+          </div>
+          <div>
+            <span>目標との差</span>
+            <strong>{weightGap}</strong>
+            <small>kg</small>
+          </div>
+        </div>
+      </section>
+
       <BodyChartCard
         bodyRecords={bodyRecords}
         targetWeight={targetWeight}
         targetBodyFat={targetBodyFat}
       />
 
-      <section className="card">
+      <section className="card goal-card">
+        <p className="metric-label">GOAL</p>
         <h2>身体目標</h2>
 
         <input
@@ -83,17 +121,23 @@ function Body({
         </section>
       )}
 
-      {bodyRecords.map((record, index) => (
-        <section className="card" key={index}>
-          <p>{new Date(record.date).toLocaleString()}</p>
-          <p>体重：{record.weight}kg</p>
-          <p>体脂肪率：{record.bodyFat || "未入力"}%</p>
+      {bodyRecords.length > 0 && (
+        <section className="card body-history-list">
+          <h2>履歴</h2>
 
-          <button onClick={() => deleteBodyRecord(index)}>
-            削除
-          </button>
+          {bodyRecords.map((record, index) => (
+            <div className="body-history-item" key={index}>
+              <p>{new Date(record.date).toLocaleString()}</p>
+              <strong>{record.weight}kg</strong>
+              <span>体脂肪率 {record.bodyFat || "未入力"}%</span>
+
+              <button onClick={() => deleteBodyRecord(index)}>
+                削除
+              </button>
+            </div>
+          ))}
         </section>
-      ))}
+      )}
     </main>
   );
 }
