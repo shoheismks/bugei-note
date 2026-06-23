@@ -90,7 +90,7 @@ function HomeStatusRadar({ combatPower }) {
               dataKey="status"
               tick={{
                 fill: "#93c5fd",
-                fontSize: 15,
+                fontSize: 16,
                 fontWeight: "bold",
               }}
             />

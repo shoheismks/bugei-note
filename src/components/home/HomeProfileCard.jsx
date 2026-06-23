@@ -12,14 +12,12 @@ function HomeProfileCard({
   );
 
   return (
-    <section className="card hero">
-      <h2>武芸館</h2>
-
-      <p>館主：下越翔平</p>
-
-      <h3>称号</h3>
+    <section className="card hero home-profile-card">
+      <p className="profile-kicker">SHU・HA・RI Member</p>
 
       <div className="big-rank">{selectedTitle}</div>
+
+      <h2>下越翔平</h2>
 
       <select
         value={selectedTitle}

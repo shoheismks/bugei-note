@@ -47,8 +47,8 @@ body {
     linear-gradient(180deg, #0b1120 0%, var(--bg) 44%, #020617 100%);
   color: var(--text);
   font-family: var(--font-sans);
-  font-size: 16px;
-  line-height: 1.5;
+  font-size: 17px;
+  line-height: 1.58;
   letter-spacing: 0;
   font-kerning: normal;
   font-optical-sizing: auto;
@@ -159,7 +159,7 @@ nav button {
   border-radius: 16px;
   background: transparent;
   color: rgba(203, 213, 225, 0.68);
-  font-size: 11px;
+  font-size: 12px;
   font-weight: 700;
   line-height: 1.05;
   scroll-snap-align: start;
@@ -200,19 +200,19 @@ main {
   width: 100%;
   max-width: 100%;
   flex: 1;
-  padding: 16px 16px 96px;
+  padding: 18px 18px 104px;
   overflow-x: hidden;
 }
 
 .home-main {
-  padding: 12px;
+  padding: 14px;
 }
 
 .card {
   width: 100%;
   max-width: 100%;
-  padding: 16px;
-  margin-bottom: 16px;
+  padding: 20px;
+  margin-bottom: 18px;
   overflow-x: hidden;
   border: 1px solid var(--border);
   border-radius: var(--radius);
@@ -223,12 +223,12 @@ main {
 }
 
 .home-main .card {
-  padding: 12px;
-  margin-bottom: 10px;
+  padding: 18px;
+  margin-bottom: 14px;
 }
 
 .home-main .hero {
-  padding: 14px 12px;
+  padding: 22px 18px;
 }
 
 .hero {
@@ -255,9 +255,33 @@ main {
 }
 
 .home-main .big-rank {
-  margin: 8px 0;
-  font-size: clamp(24px, 7vw, 34px);
-  line-height: 1.08;
+  margin: 10px 0;
+  font-size: clamp(28px, 8vw, 40px);
+  line-height: 1.1;
+}
+
+.home-profile-card {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.home-profile-card .profile-kicker {
+  margin: 0;
+  color: var(--accent-2);
+  font-size: clamp(13px, 3.8vw, 15px);
+  font-weight: 780;
+  letter-spacing: 0.04em;
+}
+
+.home-profile-card h2 {
+  margin: 0;
+  color: var(--text);
+  font-size: clamp(22px, 6.6vw, 30px);
+}
+
+.home-profile-card .big-rank {
+  margin: 0;
 }
 
 input,
@@ -370,9 +394,9 @@ button:focus-visible {
 
 .hint {
   color: var(--muted);
-  font-size: clamp(12px, 3.4vw, 14px);
+  font-size: clamp(14px, 3.8vw, 16px);
   font-weight: 500;
-  line-height: 1.45;
+  line-height: 1.58;
 }
 
 .rank-row {
@@ -434,19 +458,19 @@ button:focus-visible {
 }
 
 .rank-card {
-  padding: 10px;
-  margin-bottom: 10px;
+  padding: 13px;
+  margin-bottom: 12px;
   border-radius: var(--radius);
 }
 
 .best-record {
-  margin-top: 10px;
-  padding: 10px;
+  margin-top: 14px;
+  padding: 14px;
   border-radius: var(--radius-sm);
 }
 
 .best-record p {
-  margin: 6px 0;
+  margin: 8px 0;
 }
 
 .home-main h2,
@@ -457,22 +481,22 @@ button:focus-visible {
 }
 
 .home-main h2 {
-  font-size: clamp(17px, 5vw, 22px);
+  font-size: clamp(20px, 5.6vw, 26px);
 }
 
 .home-main h3,
 .home-main h4 {
-  font-size: clamp(14px, 4vw, 17px);
+  font-size: clamp(16px, 4.4vw, 20px);
 }
 
 .home-main p {
-  margin: 6px 0;
+  margin: 8px 0;
 }
 
 .home-main select {
-  min-height: 40px;
-  padding: 10px;
-  margin-bottom: 8px;
+  min-height: 46px;
+  padding: 12px;
+  margin-bottom: 10px;
 }
 
 .home-main .xp-bar {
@@ -481,9 +505,9 @@ button:focus-visible {
 }
 
 .home-main .chart-box {
-  height: 220px;
-  min-height: 190px;
-  padding: 8px;
+  height: 250px;
+  min-height: 220px;
+  padding: 14px;
 }
 
 .home-main .card .card {
@@ -610,13 +634,16 @@ button:focus-visible {
 .chart-box {
   width: 100%;
   min-width: 0;
-  height: 320px;
-  min-height: 260px;
-  margin-top: 12px;
-  padding: 12px;
+  height: 340px;
+  min-height: 280px;
+  margin-top: 16px;
+  padding: 16px;
   border: 1px solid var(--border);
   border-radius: var(--radius);
-  background: #0b1220;
+  background:
+    linear-gradient(180deg, rgba(59, 130, 246, 0.06), transparent),
+    #0b1220;
+  box-shadow: inset 0 1px 0 rgba(255, 255, 255, 0.035);
 }
 
 .recharts-responsive-container {
@@ -626,7 +653,7 @@ button:focus-visible {
 }
 
 .recharts-wrapper {
-  font-size: 14px;
+  font-size: 15px;
 }
 
 .recharts-cartesian-axis-tick-value,
@@ -636,7 +663,7 @@ button:focus-visible {
 
 .recharts-polar-angle-axis text {
   fill: #bfdbfe !important;
-  font-size: 15px !important;
+  font-size: 16px !important;
   font-weight: 800;
 }
 
@@ -863,7 +890,7 @@ span {
   margin-top: 0;
   color: var(--text);
   font-family: var(--font-display);
-  font-size: clamp(20px, 6vw, 28px);
+  font-size: clamp(22px, 6.4vw, 30px);
   font-weight: 800;
   line-height: 1.22;
 }
@@ -871,15 +898,16 @@ span {
 .card h3 {
   color: var(--text);
   font-family: var(--font-display);
-  font-size: clamp(17px, 5vw, 22px);
+  font-size: clamp(18px, 5.3vw, 24px);
   font-weight: 760;
   line-height: 1.25;
 }
 
 .card p {
   color: var(--muted);
-  font-size: clamp(14px, 4vw, 17px);
+  font-size: clamp(15px, 4.2vw, 18px);
   font-weight: 500;
+  line-height: 1.58;
 }
 
 .mission-title,
@@ -904,7 +932,7 @@ span {
 @media (max-width: 768px) {
   body {
     margin: 0;
-    font-size: 16px;
+    font-size: 17px;
   }
 
   .app {
@@ -938,34 +966,34 @@ span {
     min-width: 72px;
     min-height: 58px;
     padding: 8px;
-    font-size: 11px;
+    font-size: 12px;
   }
 
   main {
     width: 100%;
     flex: 1;
-    padding: 16px 16px 96px;
+    padding: 18px 16px 104px;
   }
 
   .home-main {
-    padding: 10px;
+    padding: 12px;
   }
 
   .card {
     width: 100%;
-    padding: 14px;
-    margin-bottom: 12px;
+    padding: 18px;
+    margin-bottom: 16px;
     border-radius: var(--radius);
   }
 
   .home-main .card {
-    padding: 11px;
-    margin-bottom: 9px;
+    padding: 17px;
+    margin-bottom: 14px;
   }
 
   .home-main .chart-box {
-    height: 200px;
-    min-height: 180px;
+    height: 240px;
+    min-height: 215px;
   }
 
   .report-score-ring {
