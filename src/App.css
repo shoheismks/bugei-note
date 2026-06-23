@@ -997,6 +997,209 @@ button:focus-visible {
   border-radius: var(--radius);
 }
 
+.ranking-hero {
+  text-align: left;
+}
+
+.ranking-hero-heading,
+.ranking-board-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ranking-hero-heading svg,
+.ranking-board-heading svg {
+  flex: 0 0 auto;
+  color: var(--accent-2);
+}
+
+.ranking-place {
+  margin: 18px 0;
+}
+
+.ranking-place span,
+.ranking-hero-stats span,
+.ranking-stat-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.ranking-place strong {
+  display: block;
+  margin-top: 4px;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(58px, 17vw, 88px);
+  font-weight: 900;
+  line-height: 0.95;
+}
+
+.ranking-hero-stats,
+.ranking-stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 9px;
+}
+
+.ranking-hero-stats div,
+.ranking-stat-grid div {
+  min-width: 0;
+  padding: 12px 10px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: var(--radius-sm);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.ranking-hero-stats strong,
+.ranking-stat-grid strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(19px, 5.5vw, 28px);
+  font-weight: 880;
+  line-height: 1;
+  font-variant-numeric: tabular-nums;
+}
+
+.ranking-board-card {
+  display: grid;
+  gap: 12px;
+}
+
+.ranking-empty {
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+  padding: 24px 14px;
+  border: 1px dashed rgba(96, 165, 250, 0.28);
+  border-radius: var(--radius);
+  background: rgba(15, 23, 42, 0.42);
+  text-align: center;
+}
+
+.ranking-empty svg {
+  color: var(--accent-2);
+}
+
+.ranking-empty h3,
+.ranking-empty p {
+  margin: 0;
+}
+
+.ranking-player-card {
+  display: grid;
+  gap: 12px;
+  padding: 15px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  background:
+    linear-gradient(180deg, rgba(255, 255, 255, 0.035), rgba(255, 255, 255, 0)),
+    rgba(15, 23, 42, 0.5);
+}
+
+.ranking-player-card.podium-card {
+  border-color: rgba(96, 165, 250, 0.28);
+  background:
+    radial-gradient(circle at 92% 8%, rgba(59, 130, 246, 0.16), transparent 34%),
+    rgba(15, 23, 42, 0.58);
+}
+
+.ranking-player-card.is-me {
+  border-color: rgba(59, 130, 246, 0.9);
+  box-shadow:
+    0 0 0 1px rgba(59, 130, 246, 0.28) inset,
+    0 18px 32px rgba(37, 99, 235, 0.16);
+}
+
+.ranking-player-main {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 12px;
+  align-items: center;
+}
+
+.ranking-medal {
+  display: grid;
+  place-items: center;
+  width: 46px;
+  height: 46px;
+  border: 1px solid rgba(96, 165, 250, 0.32);
+  border-radius: 14px;
+  background: rgba(59, 130, 246, 0.14);
+  color: var(--accent-2);
+}
+
+.ranking-medal span {
+  color: var(--text);
+  font-family: var(--font-mono);
+  font-size: 12px;
+  font-weight: 900;
+  line-height: 1;
+}
+
+.ranking-medal svg + span {
+  margin-top: -2px;
+}
+
+.ranking-player-main h3 {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 0;
+  font-size: clamp(19px, 5.4vw, 25px);
+}
+
+.ranking-player-main p {
+  margin: 4px 0 0;
+  color: var(--muted);
+  font-size: 14px;
+}
+
+.self-badge {
+  flex: 0 0 auto;
+  padding: 4px 8px;
+  border: 1px solid rgba(96, 165, 250, 0.3);
+  border-radius: 999px;
+  color: #bfdbfe;
+  font-size: 11px;
+  font-weight: 850;
+}
+
+.ranking-stat-grid {
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.ranking-stat-grid div {
+  padding: 11px;
+}
+
+.rival-outline-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  min-height: 42px;
+  padding: 10px 12px;
+  border: 1px solid rgba(148, 163, 184, 0.28);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: #cbd5e1;
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 780;
+}
+
+.rival-outline-button:hover,
+.rival-outline-button:focus-visible {
+  border-color: rgba(147, 197, 253, 0.48);
+  background: rgba(30, 41, 59, 0.74);
+  color: var(--text);
+}
+
 .best-record {
   margin-top: 14px;
   padding: 14px;
