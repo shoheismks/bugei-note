@@ -1,3 +1,5 @@
+import { CheckCircle, Circle, Target } from "lucide-react";
+
 function Missions({
   trainingRecords,
   martialRecords,
@@ -46,32 +48,47 @@ function Missions({
   ];
 
   const completed = missions.filter((mission) => mission.done).length;
+  const progress = Math.round((completed / missions.length) * 100);
 
   return (
-    <main>
-      <section className="card hero">
-        <h2>今日の館主ミッション</h2>
-
-        <div className="big-rank">
-          {completed}/{missions.length}
+    <main className="missions-main">
+      <section className="card hero missions-hero-card">
+        <div className="missions-hero-heading">
+          <div>
+            <p className="metric-label">DAILY MISSIONS</p>
+            <h2>Mission Board</h2>
+          </div>
+          <Target aria-hidden="true" size={24} />
         </div>
 
-        <p className="hint">
-          今日やることを斬る。敵はだいたい昨日の自分。
-        </p>
+        <div className="missions-progress-count">
+          <strong>{completed} / {missions.length}</strong>
+          <span>今日やることを斬る。</span>
+        </div>
+
+        <div className="missions-progress-bar">
+          <span style={{ width: `${progress}%` }} />
+        </div>
       </section>
 
-      {missions.map((mission, index) => (
-        <section className="card" key={index}>
-          <h3>
-            {mission.done ? "" : "□"} {mission.name}
-          </h3>
+      <section className="card missions-board-card">
+        {missions.map((mission, index) => {
+          const Icon = mission.done ? CheckCircle : Circle;
 
-          <p className="hint">
-            {mission.done ? "達成済み" : "未達成"}
-          </p>
-        </section>
-      ))}
+          return (
+            <div
+              className={`mission-row ${mission.done ? "is-done" : "is-pending"}`}
+              key={index}
+            >
+              <Icon aria-hidden="true" size={22} />
+              <div>
+                <h3>{mission.name}</h3>
+                <p>{mission.done ? "達成済み" : "未達成"}</p>
+              </div>
+            </div>
+          );
+        })}
+      </section>
     </main>
   );
 }
