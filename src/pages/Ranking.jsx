@@ -66,6 +66,25 @@ function Ranking() {
     alert("ライバルに登録しました");
   };
 
+  const removeRival = async (rivalUserId) => {
+    if (!myUserId) return;
+    if (!rivalIds.includes(rivalUserId)) return;
+
+    const { error } = await supabase
+      .from("rivals")
+      .delete()
+      .eq("user_id", myUserId)
+      .eq("rival_user_id", rivalUserId);
+
+    if (error) {
+      alert(error.message);
+      return;
+    }
+
+    setRivalIds(rivalIds.filter((id) => id !== rivalUserId));
+    alert("ライバル登録を解除しました");
+  };
+
   const getMedal = (index) => {
     if (index === 0) return "🥇";
     if (index === 1) return "🥈";
@@ -153,11 +172,14 @@ function Ranking() {
 
               {!isMe && (
                 <button
-                  className="primary"
-                  disabled={isRival}
-                  onClick={() => addRival(player.user_id)}
+                  className={isRival ? "danger" : "primary"}
+                  onClick={() =>
+                    isRival
+                      ? removeRival(player.user_id)
+                      : addRival(player.user_id)
+                  }
                 >
-                  {isRival ? "ライバル登録済み" : "ライバル登録"}
+                  {isRival ? "ライバル解除" : "ライバル登録"}
                 </button>
               )}
             </div>
