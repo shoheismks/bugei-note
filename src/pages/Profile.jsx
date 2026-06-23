@@ -1,22 +1,7 @@
 import { useState } from "react";
-import { titles } from "../titles.js";
 
-function Profile({
-  profile,
-  saveProfile,
-  gender,
-  saveGender,
-  weightClass,
-  selectedTitle,
-  changeTitle,
-  unlockedTitles,
-  handleLogout,
-}) {
+function Profile({ profile, saveProfile }) {
   const [draft, setDraft] = useState(profile);
-  const safeUnlockedTitles = unlockedTitles || ["現代サムライ"];
-  const selectableTitles = titles.filter((title) =>
-    safeUnlockedTitles.includes(title.name)
-  );
 
   const update = (key, value) => {
     setDraft({
@@ -26,10 +11,7 @@ function Profile({
   };
 
   const handleSave = async () => {
-    await saveProfile({
-      ...draft,
-      title: selectedTitle || draft.title,
-    });
+    await saveProfile(draft);
     alert("プロフィールを保存しました");
   };
 
@@ -42,31 +24,7 @@ function Profile({
         </p>
       </section>
 
-      <section className="card profile-settings-card">
-        <h3>性別</h3>
-        <select value={gender} onChange={(e) => saveGender(e.target.value)}>
-          <option value="male">男性</option>
-          <option value="female">女性</option>
-        </select>
-
-        <h3>体重階級</h3>
-        <p className="profile-readonly">{weightClass || "-"}</p>
-
-        <h3>称号</h3>
-        <select
-          value={selectedTitle}
-          onChange={(e) => {
-            changeTitle(e.target.value);
-            update("title", e.target.value);
-          }}
-        >
-          {selectableTitles.map((title) => (
-            <option key={title.id} value={title.name}>
-              {title.name}
-            </option>
-          ))}
-        </select>
-
+      <section className="card">
         <h3>館主名</h3>
         <input
           type="text"
@@ -100,17 +58,6 @@ function Profile({
 
         <button className="primary" onClick={handleSave}>
           プロフィールを保存
-        </button>
-      </section>
-
-      <section className="card logout-card">
-        <h3>アカウント</h3>
-        <p className="hint">
-          この端末からログアウトして、ログイン画面へ戻ります。
-        </p>
-
-        <button className="danger" onClick={handleLogout}>
-          ログアウト
         </button>
       </section>
     </main>

@@ -31,7 +31,7 @@ const navItems = [
   { id: "missions", label: "任務", Icon: Target },
   { id: "steps", label: "歩数", Icon: Footprints },
   { id: "techniques", label: "図鑑", Icon: BookText },
-  { id: "backup", label: "保存", Icon: Settings },
+  { id: "settings", label: "設定", Icon: Settings },
 ];
 
 function Navigation({ tab, setTab }) {

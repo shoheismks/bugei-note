@@ -9,10 +9,10 @@ import Titles from "../pages/Titles";
 import Missions from "../pages/Missions";
 import Steps from "../pages/Steps";
 import Techniques from "../pages/Techniques";
-import Backup from "../pages/Backup";
 import Profile from "../pages/Profile";
 import Ranking from "../pages/Ranking";
 import Rivals from "../pages/Rivals";
+import SettingsPage from "../pages/Settings";
 
 function AppRoutes(props) {
   const { tab } = props;
@@ -169,6 +169,15 @@ function AppRoutes(props) {
       <Profile
         profile={props.profile}
         saveProfile={props.saveProfile}
+      />
+    );
+  }
+
+  if (tab === "settings") {
+    return (
+      <SettingsPage
+        profile={props.profile}
+        saveProfile={props.saveProfile}
         gender={props.gender}
         saveGender={props.saveGender}
         weightClass={props.weightClass}
@@ -187,10 +196,6 @@ function AppRoutes(props) {
   if (tab === "rivals") {
   return <Rivals />;
 }
-
-  if (tab === "backup") {
-    return <Backup />;
-  }
 
   return null;
 }
