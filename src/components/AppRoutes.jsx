@@ -26,6 +26,9 @@ function AppRoutes(props) {
         selectedTitle={props.selectedTitle}
         changeTitle={props.changeTitle}
         unlockedTitles={props.unlockedTitles}
+        levelData={props.levelData}
+        overallScore={props.overallScore}
+        combatPower={props.combatPower}
         handleLogout={props.handleLogout}
       />
     );
