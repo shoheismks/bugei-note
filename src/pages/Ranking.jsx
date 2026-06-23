@@ -145,7 +145,7 @@ function Ranking() {
               key={player.user_id}
               className="rank-card"
               style={{
-                border: isMe ? "1px solid #f2c14e" : "1px solid #333",
+                border: isMe ? "1px solid #3b82f6" : "1px solid #334155",
               }}
             >
               <h3>

@@ -51,7 +51,7 @@ function Backup() {
 
     const a = document.createElement("a");
     a.href = url;
-    a.download = `bugei-backup-${new Date()
+    a.download = `shuhari-backup-${new Date()
       .toISOString()
       .slice(0, 10)}.json`;
 

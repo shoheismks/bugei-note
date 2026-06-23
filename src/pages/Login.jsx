@@ -13,7 +13,7 @@ function Login() {
     const { error } = await supabase.auth.signInWithOtp({
       email,
       options: {
-        emailRedirectTo: "https://bugei-note.vercel.app",
+        emailRedirectTo: window.location.origin,
       },
     });
 

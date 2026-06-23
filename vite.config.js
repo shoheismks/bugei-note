@@ -8,11 +8,11 @@ export default defineConfig({
     VitePWA({
       registerType: "autoUpdate",
       manifest: {
-        name: "武芸手帳",
-        short_name: "武芸手帳",
-        description: "身体・稽古・武芸を記録する現代サムライ手帳",
-        theme_color: "#181818",
-        background_color: "#111111",
+        name: "SHU・HA・RI",
+        short_name: "SHU・HA・RI",
+        description: "Learn. Adapt. Transcend.",
+        theme_color: "#0f172a",
+        background_color: "#0f172a",
         display: "standalone",
         start_url: "/",
       },

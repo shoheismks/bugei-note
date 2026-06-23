@@ -26,7 +26,7 @@ export function getUnlockedTitles({
 
   if (unlockedAchievements.length >= 20) {
     unlocked.push("道場の柱");
-    unlocked.push("武芸手帳館主");
+    unlocked.push("SHU・HA・RI館主");
   }
 
   return unlocked;

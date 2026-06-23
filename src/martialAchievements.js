@@ -375,7 +375,7 @@ export const martialAchievements = [
 
 {
   id: "app_1",
-  name: "武芸手帳開発者",
+  name: "SHU・HA・RI開発者",
   rarity: "一般",
   comment: "まず白画面と戦う。",
 },
@@ -399,7 +399,7 @@ export const martialAchievements = [
 },
 {
   id: "app_5",
-  name: "武芸手帳館主",
+  name: "SHU・HA・RI館主",
   rarity: "神話",
   comment: "最初の館長。",
 },

@@ -28,8 +28,8 @@ function HomeMissionCard({
         style={{
           marginTop: "12px",
           border: missionBonus.achieved
-            ? "2px solid gold"
-            : "1px solid #555",
+            ? "2px solid #3b82f6"
+            : "1px solid #334155",
         }}
       >
         <h4>{missionBonus.title}</h4>
@@ -40,7 +40,7 @@ function HomeMissionCard({
           <p
             style={{
               fontWeight: "bold",
-              color: "gold",
+              color: "#60a5fa",
             }}
           >
             +{missionBonus.xp} XP

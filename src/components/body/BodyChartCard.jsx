@@ -160,7 +160,7 @@ function BodyChartCard({
             <Line
               type="monotone"
               dataKey="weight"
-              stroke="#f2c14e"
+              stroke="#3b82f6"
               strokeWidth={3}
               dot
             />
@@ -180,7 +180,7 @@ function BodyChartCard({
             <Line
               type="monotone"
               dataKey="bodyFat"
-              stroke="#f2c14e"
+              stroke="#3b82f6"
               strokeWidth={3}
               dot
             />

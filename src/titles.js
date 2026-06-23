@@ -83,11 +83,11 @@ export const titles = [
   { id: "beef_tongue_1", name: "牛タン商人", description: "タンの価値を知る者", condition: "隠し条件" },
   { id: "beef_tongue_2", name: "豪州タンの伝道師", description: "豪州タンを広める者", condition: "隠し条件" },
 
-  { id: "app_1", name: "武芸手帳開発者", description: "武芸をアプリに刻む者", condition: "アプリ開発開始" },
+  { id: "app_1", name: "SHU・HA・RI開発者", description: "武芸をアプリに刻む者", condition: "アプリ開発開始" },
   { id: "app_2", name: "バグ斬り", description: "エラーを恐れない者", condition: "開発系実績解除" },
   { id: "app_3", name: "React剣士", description: "コンポーネントを斬り分ける者", condition: "Hook分離達成" },
   { id: "app_4", name: "白画面討伐者", description: "白画面から帰還した者", condition: "実績5個解除" },
-  { id: "app_5", name: "武芸手帳館主", description: "この館を作った者", condition: "称号図鑑作成" },
+  { id: "app_5", name: "SHU・HA・RI館主", description: "この館を作った者", condition: "称号図鑑作成" },
 
   { id: "diet_1", name: "沼の住人", description: "沼と共に減量する者", condition: "身体記録を継続" },
   { id: "diet_2", name: "スーパー大麦使い", description: "食物繊維の使い手", condition: "隠し条件" },

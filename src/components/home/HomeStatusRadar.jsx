@@ -89,7 +89,7 @@ function HomeStatusRadar({ combatPower }) {
             <PolarAngleAxis
               dataKey="status"
               tick={{
-                fill: "#f2c14e",
+                fill: "#93c5fd",
                 fontSize: 15,
                 fontWeight: "bold",
               }}
@@ -104,8 +104,8 @@ function HomeStatusRadar({ combatPower }) {
             <Radar
               name="戦闘力"
               dataKey="value"
-              stroke="#f2c14e"
-              fill="#f2c14e"
+              stroke="#3b82f6"
+              fill="#3b82f6"
               fillOpacity={0.45}
             />
           </RadarChart>
