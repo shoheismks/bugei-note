@@ -212,10 +212,10 @@ main main {
 .segmented-tabs {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(0, 1fr));
-  gap: 6px;
+  gap: 4px;
   width: 100%;
   margin: 0 0 16px;
-  padding: 6px;
+  padding: 5px;
   overflow: hidden;
   border: 1px solid rgba(148, 163, 184, 0.16);
   border-radius: var(--radius);
@@ -225,12 +225,12 @@ main main {
 .segmented-tabs button {
   min-width: 0;
   min-height: 40px;
-  padding: 10px 6px;
+  padding: 10px 4px;
   border: 1px solid transparent;
   border-radius: 10px;
   background: transparent;
   color: var(--muted);
-  font-size: clamp(11px, 3vw, 14px);
+  font-size: clamp(10px, 2.65vw, 13px);
   font-weight: 760;
   line-height: 1.1;
   white-space: nowrap;
