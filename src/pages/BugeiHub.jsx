@@ -28,7 +28,10 @@ function BugeiHub(props) {
       />
 
       {props.bugeiTab === "titles" && (
-        <Titles unlockedTitles={props.unlockedTitles} />
+        <Titles
+          unlockedTitles={props.unlockedTitles}
+          selectedTitle={props.selectedTitle}
+        />
       )}
 
       {props.bugeiTab === "achievement" && (
