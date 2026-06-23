@@ -112,18 +112,6 @@ header p {
   overflow-wrap: anywhere;
 }
 
-.hero-image {
-  display: block;
-  width: 100%;
-  max-width: 444px;
-  aspect-ratio: 16 / 7;
-  margin: 18px auto 0;
-  object-fit: cover;
-  border: 1px solid rgba(96, 165, 250, 0.24);
-  border-radius: 10px;
-  box-shadow: 0 18px 42px rgba(2, 6, 23, 0.36);
-}
-
 nav {
   position: sticky;
   top: 0;
