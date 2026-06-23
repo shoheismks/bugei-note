@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { Copy, QrCode, Search, Swords, UserPlus, Users } from "lucide-react";
 import { supabase } from "../lib/supabase";
 
 function Rivals() {
@@ -7,6 +8,7 @@ function Rivals() {
   const [rivals, setRivals] = useState([]);
   const [searchId, setSearchId] = useState("");
   const [searchResult, setSearchResult] = useState(null);
+  const [showFullId, setShowFullId] = useState(false);
 
   useEffect(() => {
     loadRivals();
@@ -153,27 +155,67 @@ function Rivals() {
     return Number(rival.combat_power || 0) - Number(myRanking?.combat_power || 0);
   };
 
+  const formatNumber = (value) => {
+    const number = Number(value || 0);
+    return Number.isFinite(number) ? number.toLocaleString("ja-JP") : "0";
+  };
+
+  const shortId = myUserId ? `${myUserId.slice(0, 8)}…` : "-";
+
   return (
     <main>
-      <section className="card hero">
-        <h2>ライバル</h2>
-        <p>登録した武芸者との比較</p>
+      <section className="card hero rivals-hero">
+        <div className="rivals-hero-heading">
+          <div>
+            <p className="metric-label">RIVALS</p>
+            <h2>武友と繋がる</h2>
+          </div>
+          <Users aria-hidden="true" size={24} />
+        </div>
 
-        <div className="big-rank">{rivals.length}人</div>
+        <div className="rivals-count">{rivals.length}人</div>
+        <h3>{rivals.length === 0 ? "武友がいません" : "武友と接続中"}</h3>
+        <p className="hint">
+          {rivals.length === 0
+            ? "仲間を登録して競い合いましょう。"
+            : "日々の鍛錬を比べながら、次の一歩を見つけましょう。"}
+        </p>
       </section>
 
-      <section className="card">
-        <h2>ライバルID交換</h2>
-        <p className="hint">自分のIDを共有して、相手のIDを検索できます。</p>
+      <section className="card rivals-connect-card">
+        <div className="rivals-section-heading">
+          <QrCode aria-hidden="true" size={20} />
+          <div>
+            <p className="metric-label">CONNECT</p>
+            <h2>ID交換</h2>
+          </div>
+        </div>
+        <p className="hint">
+          自分のIDを共有して、他の武芸者と繋がりましょう。
+        </p>
 
-        <input value={myUserId || ""} readOnly />
+        <div className="rival-id-row">
+          <button
+            className="rival-id-display"
+            type="button"
+            onClick={() => setShowFullId(!showFullId)}
+          >
+            <span>MY ID</span>
+            <strong>{showFullId ? myUserId || "-" : shortId}</strong>
+          </button>
 
-        <button className="primary" onClick={copyMyId}>
-          IDをコピー
-        </button>
+          <button
+            className="rival-icon-button"
+            type="button"
+            onClick={copyMyId}
+            aria-label="ライバルIDをコピー"
+          >
+            <Copy aria-hidden="true" size={18} />
+          </button>
+        </div>
 
         {myUserId && (
-          <div className="qr-box">
+          <div className="qr-box rival-qr-box">
             <img
               alt="ライバルID QRコード"
               src={`https://api.qrserver.com/v1/create-qr-code/?size=180x180&data=${encodeURIComponent(
@@ -185,8 +227,17 @@ function Rivals() {
         )}
       </section>
 
-      <section className="card">
-        <h2>ID検索</h2>
+      <section className="card rivals-add-card">
+        <div className="rivals-section-heading">
+          <UserPlus aria-hidden="true" size={20} />
+          <div>
+            <p className="metric-label">ADD RIVAL</p>
+            <h2>ID検索</h2>
+          </div>
+        </div>
+        <p className="hint">
+          相手のIDを入力してライバル登録できます。
+        </p>
 
         <input
           type="text"
@@ -195,16 +246,22 @@ function Rivals() {
           onChange={(e) => setSearchId(e.target.value)}
         />
 
-        <button className="primary" onClick={searchRival}>
+        <button className="primary rivals-search-button" onClick={searchRival}>
+          <Search aria-hidden="true" size={18} />
           検索
         </button>
 
         {searchResult && (
-          <div className="rank-card">
-            <h3>{searchResult.dojo_name}</h3>
-            <p>{searchResult.title}</p>
-            <p>戦闘力：{searchResult.combat_power ?? 0}</p>
-            <button className="primary" onClick={() => addRival(searchResult)}>
+          <div className="rank-card rival-result-card">
+            <div>
+              <h3>{searchResult.dojo_name}</h3>
+              <p>{searchResult.title || "SHU・HA・RI Member"}</p>
+            </div>
+            <strong>{formatNumber(searchResult.combat_power)} CP</strong>
+            <button
+              className="rival-outline-button"
+              onClick={() => addRival(searchResult)}
+            >
               ライバル登録
             </button>
           </div>
@@ -212,8 +269,9 @@ function Rivals() {
       </section>
 
       {rivals.length === 0 && (
-        <section className="card">
-          <p>ライバルはまだいません</p>
+        <section className="card rivals-empty-card">
+          <Users aria-hidden="true" size={30} />
+          <h2>まだライバルがいません</h2>
           <p className="hint">
             ランキング画面からライバル登録できます。
           </p>
@@ -224,17 +282,34 @@ function Rivals() {
         const diff = getPowerDiff(rival);
 
         return (
-          <section className="card" key={rival.user_id}>
-            <h2>{rival.dojo_name}</h2>
+          <section className="card rival-profile-card" key={rival.user_id}>
+            <div className="rival-card-header">
+              <div>
+                <p className="metric-label">RIVAL</p>
+                <h2>{rival.dojo_name}</h2>
+                <p>{rival.title || "SHU・HA・RI Member"}</p>
+              </div>
+              <Swords aria-hidden="true" size={24} />
+            </div>
 
-            <p>{rival.title}</p>
-
-            <p>戦闘力：{rival.combat_power ?? 0}</p>
-            <p>総XP：{rival.total_xp ?? 0}</p>
-            <p>
-              総合スコア：
-              {Number(rival.overall_score ?? 0).toFixed(1)}
-            </p>
+            <div className="rival-card-stats">
+              <div>
+                <span>称号</span>
+                <strong>{rival.title || "-"}</strong>
+              </div>
+              <div>
+                <span>戦闘力</span>
+                <strong>{formatNumber(rival.combat_power)}</strong>
+              </div>
+              <div>
+                <span>最終ログイン</span>
+                <strong>準備中</strong>
+              </div>
+              <div>
+                <span>勝敗数</span>
+                <strong>0 - 0</strong>
+              </div>
+            </div>
 
             {myRanking && (
               <p className="hint">
@@ -247,12 +322,17 @@ function Rivals() {
               </p>
             )}
 
-            <button
-              className="danger"
-              onClick={() => removeRival(rival.user_id)}
-            >
-              ライバル解除
-            </button>
+            <div className="rival-card-actions">
+              <button className="rival-outline-button" type="button">
+                比較
+              </button>
+              <button
+                className="rival-outline-button"
+                onClick={() => removeRival(rival.user_id)}
+              >
+                解除
+              </button>
+            </div>
           </section>
         );
       })}
