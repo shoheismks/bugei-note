@@ -30,6 +30,10 @@ function HomeCombatCard({
 
       <div className="big-rank metric-value">{safeCombatPower.total}</div>
 
+      <p className="hint">
+        戦闘力：筋力・武芸・継続・知識・身体操作から算出。
+      </p>
+
       <h4>筋力 {safeCombatPower.strength}</h4>
       <div className="xp-bar">
         <div
@@ -87,6 +91,10 @@ function HomeCombatCard({
         <div className="big-rank level-value">
           Lv.{safeLevelData.level}
         </div>
+
+        <p className="hint">
+          館主レベル（ユーザーレベル）：記録や習得で増えるXPに応じて上昇。
+        </p>
 
         <div className="xp-bar">
           <div

@@ -39,6 +39,7 @@ import { useAchievements } from "./hooks/useAchievements";
 import Header from "./components/Header";
 import Navigation from "./components/Navigation";
 import AchievementPopup from "./components/AchievementPopup";
+import Onboarding from "./components/Onboarding";
 import Login from "./pages/Login";
 import { supabase } from "./lib/supabase";
 import AppRoutes from "./components/AppRoutes";
@@ -52,6 +53,9 @@ function App() {
   const { profile, saveProfile } = useProfile();
 
   const [tab, setTab] = useState("home");
+  const [practiceTab, setPracticeTab] = useState("strength");
+  const [bodyTab, setBodyTab] = useState("record");
+  const [bugeiTab, setBugeiTab] = useState("titles");
 
   const [gender, setGender] = useState(
     localStorage.getItem("gender") || "male"
@@ -227,7 +231,9 @@ function App() {
 };
 
   const resetAllData = () => {
-    const result = window.confirm("すべての記録を削除しますか？");
+    const result = window.confirm(
+      "本当に削除しますか？\nこの操作は戻せません。"
+    );
 
     if (!result) return;
 
@@ -251,6 +257,48 @@ function App() {
   const handleLogout = async () => {
     await supabase.auth.signOut();
     window.location.reload();
+  };
+
+  const confirmDelete = () => {
+    return window.confirm(
+      "本当に削除しますか？\nこの操作は戻せません。"
+    );
+  };
+
+  const safelyDeleteBodyRecord = (index) => {
+    if (confirmDelete()) deleteBodyRecord(index);
+  };
+
+  const safelyDeleteTrainingRecord = (index) => {
+    if (confirmDelete()) deleteTrainingRecord(index);
+  };
+
+  const safelyDeleteMartialRecord = (index) => {
+    if (confirmDelete()) deleteMartialRecord(index);
+  };
+
+  const safelyDeleteJournalRecord = (index) => {
+    if (confirmDelete()) deleteJournalRecord(index);
+  };
+
+  const safelyDeleteStepRecord = (index) => {
+    if (confirmDelete()) deleteStepRecord(index);
+  };
+
+  const openShortcut = (targetTab, innerTab) => {
+    setTab(targetTab);
+
+    if (targetTab === "training") {
+      setPracticeTab(innerTab || "strength");
+    }
+
+    if (targetTab === "body") {
+      setBodyTab(innerTab || "record");
+    }
+
+    if (targetTab === "martial") {
+      setBugeiTab(innerTab || "titles");
+    }
   };
 
   const handlePartChange = (part) => {
@@ -314,12 +362,22 @@ if (!session) {
 
       <Header />
 
+      <Onboarding />
+
       <Navigation tab={tab} setTab={setTab} />
 
       
 
 <AppRoutes
   tab={tab}
+  setTab={setTab}
+  practiceTab={practiceTab}
+  setPracticeTab={setPracticeTab}
+  bodyTab={bodyTab}
+  setBodyTab={setBodyTab}
+  bugeiTab={bugeiTab}
+  setBugeiTab={setBugeiTab}
+  openShortcut={openShortcut}
   overallScore={overallScore}
   totalXp={totalXp}
   martialXp={martialXp}
@@ -347,7 +405,7 @@ if (!session) {
   bodyFat={bodyFat}
   setBodyFat={setBodyFat}
   saveBodyRecord={saveBodyRecord}
-  deleteBodyRecord={deleteBodyRecord}
+  deleteBodyRecord={safelyDeleteBodyRecord}
   trainingPart={trainingPart}
   exercise={exercise}
   trainingWeight={trainingWeight}
@@ -365,7 +423,7 @@ if (!session) {
   setTrainingDate={setTrainingDate}
   handlePartChange={handlePartChange}
   handleSaveTrainingRecord={handleSaveTrainingRecord}
-  deleteTrainingRecord={deleteTrainingRecord}
+  deleteTrainingRecord={safelyDeleteTrainingRecord}
   getRecordScore={getRecordScore}
   getPartBestScore={getPartBestScore}
   getBestRecord={getBestRecord}
@@ -379,19 +437,19 @@ if (!session) {
   martialDate={martialDate}
   setMartialDate={setMartialDate}
   saveMartialRecord={saveMartialRecord}
-  deleteMartialRecord={deleteMartialRecord}
+  deleteMartialRecord={safelyDeleteMartialRecord}
   journalText={journalText}
   setJournalText={setJournalText}
   journalSearch={journalSearch}
   setJournalSearch={setJournalSearch}
   saveJournalRecord={saveJournalRecord}
-  deleteJournalRecord={deleteJournalRecord}
+  deleteJournalRecord={safelyDeleteJournalRecord}
   steps={steps}
   setSteps={setSteps}
   stepDate={stepDate}
   setStepDate={setStepDate}
   saveStepRecord={saveStepRecord}
-  deleteStepRecord={deleteStepRecord}
+  deleteStepRecord={safelyDeleteStepRecord}
   getTechniqueLevel={getTechniqueLevel}
   updateTechniqueLevel={updateTechniqueLevel}
   learnedCount={learnedCount}

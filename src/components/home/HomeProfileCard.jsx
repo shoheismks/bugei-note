@@ -33,6 +33,10 @@ function HomeProfileCard({
       <p className="hint">
         称号解除数：{safeUnlockedTitles.length}/{titles.length}
       </p>
+
+      <p className="hint">
+        称号：条件達成で解放され、プロフィールに表示できます。
+      </p>
     </section>
   );
 }

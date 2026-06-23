@@ -62,6 +62,10 @@ function Rivals() {
 
   const removeRival = async (rivalUserId) => {
     if (!myUserId) return;
+    const result = window.confirm(
+      "本当に削除しますか？\nこの操作は戻せません。"
+    );
+    if (!result) return;
 
     const { error } = await supabase
       .from("rivals")

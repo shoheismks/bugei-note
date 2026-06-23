@@ -1,36 +1,16 @@
 import {
   Activity,
-  Award,
-  BarChart3,
-  BookOpen,
-  BookText,
   Dumbbell,
-  Footprints,
   Home,
-  Radar,
   Settings,
   Swords,
-  Target,
-  Trophy,
-  User,
-  Users,
 } from "lucide-react";
 
 const navItems = [
   { id: "home", label: "ホーム", Icon: Home },
-  { id: "profile", label: "プロフィール", Icon: User },
+  { id: "training", label: "稽古", Icon: Dumbbell },
   { id: "body", label: "身体", Icon: Activity },
-  { id: "training", label: "鍛錬", Icon: Dumbbell },
-  { id: "rank", label: "レポート", Icon: Radar },
-  { id: "ranking", label: "ランキング", Icon: BarChart3 },
-  { id: "rivals", label: "ライバル", Icon: Users },
-  { id: "achievement", label: "実績", Icon: Trophy },
-  { id: "martial", label: "稽古", Icon: Swords },
-  { id: "journal", label: "日誌", Icon: BookOpen },
-  { id: "titles", label: "称号", Icon: Award },
-  { id: "missions", label: "任務", Icon: Target },
-  { id: "steps", label: "歩数", Icon: Footprints },
-  { id: "techniques", label: "図鑑", Icon: BookText },
+  { id: "martial", label: "武芸", Icon: Swords },
   { id: "settings", label: "設定", Icon: Settings },
 ];
 

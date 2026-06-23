@@ -146,13 +146,13 @@ function Backup() {
 
   const clearAllData = () => {
     const firstConfirm = window.confirm(
-      "すべてのデータを削除しますか？"
+      "本当に削除しますか？\nこの操作は戻せません。"
     );
 
     if (!firstConfirm) return;
 
     const secondConfirm = window.confirm(
-      "本当に削除しますか？この操作は取り消せません。"
+      "本当に削除しますか？\nこの操作は戻せません。"
     );
 
     if (!secondConfirm) return;

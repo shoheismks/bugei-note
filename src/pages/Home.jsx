@@ -7,6 +7,7 @@ import HomeStreakCard from "../components/home/HomeStreakCard";
 import HomeCalendarCard from "../components/home/HomeCalendarCard";
 import HomeStatusRadar from "../components/home/HomeStatusRadar";
 import HomeQuestCard from "../components/home/HomeQuestCard";
+import { BookOpen, Dumbbell, Footprints, Scale } from "lucide-react";
 
 function Home({
   overallScore,
@@ -28,6 +29,7 @@ function Home({
   selectedTitle,
   changeTitle,
   resetAllData,
+  openShortcut,
 }) {
   const today = new Date().toDateString();
 
@@ -71,6 +73,28 @@ function Home({
         bodyRecorded={bodyRecorded}
         trainingDone={trainingDone}
       />
+
+      <section className="card quick-actions-card">
+        <h2>すぐ記録</h2>
+        <div className="quick-actions">
+          <button onClick={() => openShortcut("training", "strength")}>
+            <Dumbbell aria-hidden="true" size={19} />
+            <span>稽古を記録</span>
+          </button>
+          <button onClick={() => openShortcut("body", "record")}>
+            <Scale aria-hidden="true" size={19} />
+            <span>身体を記録</span>
+          </button>
+          <button onClick={() => openShortcut("training", "steps")}>
+            <Footprints aria-hidden="true" size={19} />
+            <span>歩数を記録</span>
+          </button>
+          <button onClick={() => openShortcut("training", "journal")}>
+            <BookOpen aria-hidden="true" size={19} />
+            <span>日誌を書く</span>
+          </button>
+        </div>
+      </section>
 
       <HomeMissionCard
         missionCount={missionCount}

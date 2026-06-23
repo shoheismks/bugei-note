@@ -69,6 +69,10 @@ function Ranking() {
   const removeRival = async (rivalUserId) => {
     if (!myUserId) return;
     if (!rivalIds.includes(rivalUserId)) return;
+    const result = window.confirm(
+      "本当に削除しますか？\nこの操作は戻せません。"
+    );
+    if (!result) return;
 
     const { error } = await supabase
       .from("rivals")

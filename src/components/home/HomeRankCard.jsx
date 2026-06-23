@@ -34,6 +34,10 @@ function HomeRankCard({
     <section className="card">
       <h2>総合段位</h2>
 
+      <p className="hint">
+        段位：稽古の最高スコアに応じて変化。
+      </p>
+
       <div className="big-rank">
         {scoreToRank(overallScore)}
       </div>
@@ -52,6 +56,10 @@ function HomeRankCard({
       <p>
         段位経験値：
         {overallXp.currentXp}/{overallXp.nextXp}XP
+      </p>
+
+      <p className="hint">
+        XP：記録や習得で増加し、次の段位への進捗になります。
       </p>
 
       <p>
