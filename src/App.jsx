@@ -309,7 +309,7 @@ if (!session) {
 
       <Header />
 
-      <Navigation setTab={setTab} />
+      <Navigation tab={tab} setTab={setTab} />
 
       
 

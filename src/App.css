@@ -118,19 +118,25 @@ header img {
 }
 
 nav {
-  position: sticky;
-  top: 0;
-  z-index: 20;
+  position: fixed;
+  left: 50%;
+  bottom: 0;
+  z-index: 40;
   display: flex;
-  gap: 6px;
-  padding: 8px;
+  width: min(100%, 480px);
+  gap: 8px;
+  padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
+  transform: translateX(-50%);
   overflow-x: auto;
   overflow-y: hidden;
   overscroll-behavior-x: contain;
   scroll-snap-type: x proximity;
-  background: rgba(15, 23, 42, 0.86);
-  border-bottom: 1px solid var(--border);
-  backdrop-filter: blur(18px);
+  background:
+    linear-gradient(180deg, rgba(15, 23, 42, 0.72), rgba(15, 23, 42, 0.96)),
+    rgba(15, 23, 42, 0.92);
+  border-top: 1px solid rgba(148, 163, 184, 0.22);
+  box-shadow: 0 -18px 42px rgba(2, 6, 23, 0.44);
+  backdrop-filter: blur(22px);
   scrollbar-width: none;
 }
 
@@ -140,34 +146,61 @@ nav::-webkit-scrollbar {
 
 nav button {
   flex: 0 0 auto;
-  width: auto;
+  display: inline-flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 5px;
+  width: 72px;
   min-width: 72px;
-  min-height: 42px;
-  padding: 10px 14px;
+  min-height: 58px;
+  padding: 8px 8px;
   border: 1px solid transparent;
-  border-radius: 999px;
-  background: rgba(15, 23, 42, 0.48);
-  color: var(--muted);
-  font-size: 13px;
-  font-weight: 720;
-  line-height: 1.2;
+  border-radius: 16px;
+  background: transparent;
+  color: rgba(203, 213, 225, 0.68);
+  font-size: 11px;
+  font-weight: 700;
+  line-height: 1.05;
   scroll-snap-align: start;
-  white-space: normal;
-  overflow-wrap: anywhere;
+  white-space: nowrap;
+  overflow-wrap: normal;
+  box-shadow: none;
+}
+
+nav button svg {
+  width: 21px;
+  height: 21px;
+  flex: 0 0 auto;
+  stroke: currentColor;
+}
+
+nav button span {
+  display: block;
+  max-width: 100%;
+  overflow: hidden;
+  text-overflow: ellipsis;
 }
 
 nav button:hover,
 nav button:focus-visible {
-  background: var(--accent-soft);
-  border-color: rgba(96, 165, 250, 0.3);
+  background: rgba(30, 41, 59, 0.88);
+  border-color: rgba(148, 163, 184, 0.24);
   color: var(--text);
+}
+
+nav button.active {
+  background: linear-gradient(180deg, #3b82f6 0%, #2563eb 100%);
+  border-color: rgba(147, 197, 253, 0.44);
+  color: #f8fafc;
+  box-shadow: 0 10px 26px rgba(37, 99, 235, 0.38);
 }
 
 main {
   width: 100%;
   max-width: 100%;
   flex: 1;
-  padding: 16px;
+  padding: 16px 16px 96px;
   overflow-x: hidden;
 }
 
@@ -896,21 +929,22 @@ span {
 
   nav {
     gap: 8px;
-    padding: 8px;
+    padding: 10px 10px calc(10px + env(safe-area-inset-bottom));
     margin-bottom: 0;
   }
 
   nav button {
-    min-width: 68px;
-    min-height: 44px;
-    padding: 10px 13px;
-    font-size: 14px;
+    width: 72px;
+    min-width: 72px;
+    min-height: 58px;
+    padding: 8px;
+    font-size: 11px;
   }
 
   main {
     width: 100%;
     flex: 1;
-    padding: 16px;
+    padding: 16px 16px 96px;
   }
 
   .home-main {
