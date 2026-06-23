@@ -10,17 +10,18 @@ import {
   XAxis,
   YAxis,
 } from "recharts";
+import { Activity, BarChart3, Download, Target, Trophy } from "lucide-react";
 import { supabase } from "../lib/supabase";
 
 const COLORS = [
   "#0ea5e9",
   "#2563eb",
-  "#4f46e5",
-  "#7c3aed",
+  "#3b82f6",
+  "#60a5fa",
   "#0891b2",
-  "#059669",
-  "#d97706",
-  "#dc2626",
+  "#38bdf8",
+  "#1d4ed8",
+  "#0284c7",
 ];
 
 const NAVY = "#0f172a";
@@ -379,19 +380,72 @@ function Rank({
     image.src = url;
   };
 
+  const maxPartReport = [...report.partReports].sort(
+    (a, b) => b.score - a.score
+  )[0];
+
+  const formatBestRecord = (bestRecord) => {
+    if (!bestRecord) return "記録なし";
+    if (timeBasedExercises.includes(bestRecord.exercise)) {
+      return `${bestRecord.exercise} ${bestRecord.reps}秒`;
+    }
+    return `${bestRecord.exercise} ${bestRecord.weight}kg × ${bestRecord.reps}回`;
+  };
+
+  const summaryCards = [
+    { label: "総XP", value: totalXp },
+    {
+      label: "ランキング",
+      value: `${rankingSummary.rank}/${rankingSummary.total || "-"}`,
+    },
+    {
+      label: "稽古回数",
+      value: trainingRecords.length + martialRecords.length,
+    },
+    { label: "最大スコア", value: maxPartReport?.score || 0 },
+  ];
+
+  const analysisBlocks = [
+    {
+      label: "STRENGTH",
+      title: report.strengthTop5[0]?.name || "-",
+      text: report.strengthTop5[0]
+        ? `${report.strengthTop5[0].score}点で最も高い領域。`
+        : "まだ十分な記録がありません。",
+      icon: Trophy,
+    },
+    {
+      label: "WEAKNESS",
+      title: report.weaknessTop5[0]?.name || "未記録領域",
+      text:
+        (report.weaknessTop5[0]?.score || 0) === 0
+          ? "記録不足のため推測を含みます。"
+          : `${report.weaknessTop5[0].score}点。伸びしろとして管理。`,
+      icon: Activity,
+    },
+    {
+      label: "NEXT",
+      title: report.directions[0] || "次の記録を追加",
+      text: `根拠：${report.dataSources.slice(0, 4).join(" / ")}`,
+      icon: Target,
+    },
+  ];
+
   return (
     <main>
       <section className="card report-card">
         <div className="report-toolbar">
           <div>
-            <p className="report-eyebrow">Body Intelligence Analysis</p>
+            <p className="report-eyebrow">Analysis Dashboard</p>
             <h2>身体診断アナリシス</h2>
+            <p className="hint">BODY INTELLIGENCE ANALYSIS</p>
           </div>
 
           <button
             className="primary report-export-button"
             onClick={exportInfographic}
           >
+            <Download aria-hidden="true" size={16} />
             エクスポート
           </button>
         </div>
@@ -401,6 +455,9 @@ function Rank({
             <p className="hint">{report.reportDate}</p>
             <div className="report-rank">{scoreToRank(overallScore)}</div>
             <h3>{scoreToSamuraiTitle(overallScore)}</h3>
+            <p className="report-hero-copy">
+              鍛錬・稽古・身体推移・歩数・実績を横断して現在地を整理します。
+            </p>
           </div>
 
           <div className="report-score-ring">
@@ -410,35 +467,33 @@ function Rank({
         </div>
 
         <div className="report-metrics">
-          <div>
-            <span>累計XP</span>
-            <strong>{totalXp}</strong>
-          </div>
-          <div>
-            <span>ランキング</span>
-            <strong>
-              {rankingSummary.rank}/{rankingSummary.total || "-"}
-            </strong>
-          </div>
-          <div>
-            <span>鍛錬 / 稽古</span>
-            <strong>
-              {trainingRecords.length}/{martialRecords.length}
-            </strong>
-          </div>
-          <div>
-            <span>歩数平均</span>
-            <strong>{report.stepSummary.average}</strong>
-          </div>
+          {summaryCards.map((item) => (
+            <div key={item.label}>
+              <span>{item.label}</span>
+              <strong>{item.value}</strong>
+            </div>
+          ))}
         </div>
 
         <div className="report-grid">
           <section className="report-panel report-chart-panel">
-            <h3>部位別スコア</h3>
+            <div className="report-panel-heading">
+              <BarChart3 aria-hidden="true" size={18} />
+              <h3>部位別スコア</h3>
+            </div>
             <div className="report-chart">
               <ResponsiveContainer width="100%" height="100%">
-                <BarChart data={report.partReports}>
-                  <XAxis dataKey="shortName" tickLine={false} axisLine={false} />
+                <BarChart
+                  data={report.partReports}
+                  margin={{ top: 12, right: 4, left: 4, bottom: 4 }}
+                >
+                  <XAxis
+                    dataKey="shortName"
+                    tickLine={false}
+                    axisLine={false}
+                    tick={{ fill: "#cbd5e1", fontSize: 13, fontWeight: 700 }}
+                    interval={0}
+                  />
                   <YAxis hide domain={[0, "dataMax + 10"]} />
                   <Tooltip />
                   <Bar dataKey="score" radius={[8, 8, 2, 2]}>
@@ -451,29 +506,38 @@ function Rank({
             </div>
           </section>
 
-          <section className="report-panel">
+          <section className="report-panel report-analysis-panel">
             <h3>分析サマリー</h3>
-            <p>強み：{report.strengthTop5[0]?.name || "-"}</p>
-            <p>盲点：{report.weaknessTop5[0]?.name || "未記録領域"}</p>
-            <p>根拠：{report.dataSources.join(" / ")}</p>
+            <div className="report-analysis-grid">
+              {analysisBlocks.map((block) => {
+                const Icon = block.icon;
+                return (
+                  <div className="report-analysis-block" key={block.label}>
+                    <Icon aria-hidden="true" size={18} />
+                    <span>{block.label}</span>
+                    <strong>{block.title}</strong>
+                    <p>{block.text}</p>
+                  </div>
+                );
+              })}
+            </div>
           </section>
         </div>
 
         <section className="report-panel">
-          <h3>Best Records</h3>
+          <div className="report-panel-heading">
+            <Trophy aria-hidden="true" size={18} />
+            <h3>Best Records</h3>
+          </div>
           <div className="report-table">
             {report.partReports.map(({ name, score, rank, bestRecord, color }) => (
               <div className="report-row" key={name}>
                 <span className="report-dot" style={{ background: color }} />
                 <strong>{name}</strong>
-                <span>{rank}</span>
-                <span>{score}</span>
-                <small>
-                  {bestRecord
-                    ? timeBasedExercises.includes(bestRecord.exercise)
-                      ? `${bestRecord.exercise} / ${bestRecord.reps}秒`
-                      : `${bestRecord.exercise} / ${bestRecord.weight}kg x ${bestRecord.reps}`
-                    : "記録なし"}
+                <span className="report-rank-chip">{rank}</span>
+                <span className="report-score-value">{score}</span>
+                <small className={!bestRecord ? "muted-empty" : undefined}>
+                  {formatBestRecord(bestRecord)}
                 </small>
               </div>
             ))}
@@ -481,47 +545,32 @@ function Rank({
         </section>
       </section>
 
-      <section className="card">
+      <section className="card report-rank-list-card">
         <h2>部位別段位</h2>
+        <div className="report-rank-list">
+          {parts.map((part) => {
+            const score = getPartBestScore(part);
+            const bestRecord = getBestRecord(part);
 
-        {parts.map((part) => {
-          const score = getPartBestScore(part);
-          const bestRecord = getBestRecord(part);
-
-          return (
-            <div key={part} style={{ marginBottom: "20px" }}>
-              <h3>{part}</h3>
-
-              <p>
-                {scoreToRank(score)}
-                {" / "}
-                {scoreToSamuraiTitle(score)}
-              </p>
-
-              {bestRecord ? (
-                <>
-                  <p>{bestRecord.exercise}</p>
-
-                  <p>
-                    {timeBasedExercises.includes(bestRecord.exercise)
-                      ? `${bestRecord.reps}秒`
-                      : `${bestRecord.weight}kg x ${bestRecord.reps}回`}
-                  </p>
-
-                  {!timeBasedExercises.includes(bestRecord.exercise) && (
-                    <p>
-                      推定1RM：
-                      {getRecordScore(bestRecord).toFixed(1)}
-                      kg
-                    </p>
+            return (
+              <div className="report-rank-list-row" key={part}>
+                <div>
+                  <strong>{part}</strong>
+                  <span className={!bestRecord ? "muted-empty" : undefined}>
+                    {bestRecord ? formatBestRecord(bestRecord) : "記録なし"}
+                  </span>
+                </div>
+                <div>
+                  <span>{scoreToRank(score)}</span>
+                  <small>{scoreToSamuraiTitle(score)}</small>
+                  {bestRecord && !timeBasedExercises.includes(bestRecord.exercise) && (
+                    <small>推定1RM {getRecordScore(bestRecord).toFixed(1)}kg</small>
                   )}
-                </>
-              ) : (
-                <p>記録なし</p>
-              )}
-            </div>
-          );
-        })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </section>
     </main>
   );
