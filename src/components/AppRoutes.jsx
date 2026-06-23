@@ -169,6 +169,13 @@ function AppRoutes(props) {
       <Profile
         profile={props.profile}
         saveProfile={props.saveProfile}
+        gender={props.gender}
+        saveGender={props.saveGender}
+        weightClass={props.weightClass}
+        selectedTitle={props.selectedTitle}
+        changeTitle={props.changeTitle}
+        unlockedTitles={props.unlockedTitles}
+        handleLogout={props.handleLogout}
       />
     );
   }

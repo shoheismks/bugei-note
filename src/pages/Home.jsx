@@ -23,13 +23,10 @@ function Home({
   playerClass,
   recommendedMission,
   unlockedTitles,
-  gender,
-  weightClass,
   savedWeight,
   savedBodyFat,
   selectedTitle,
   changeTitle,
-  saveGender,
   resetAllData,
 }) {
   const today = new Date().toDateString();
@@ -105,25 +102,10 @@ function Home({
 
       <HomeBodyCard
         totalXp={totalXp}
-        gender={gender}
-        weightClass={weightClass}
         savedWeight={savedWeight}
         savedBodyFat={savedBodyFat}
         resetAllData={resetAllData}
       />
-
-      <section className="card">
-        <h2>基本設定</h2>
-
-        <select value={gender} onChange={(e) => saveGender(e.target.value)}>
-          <option value="male">男性</option>
-          <option value="female">女性</option>
-        </select>
-
-        <p className="hint">
-          性別と体重により、今後の段位基準を調整します。
-        </p>
-      </section>
     </main>
   );
 }

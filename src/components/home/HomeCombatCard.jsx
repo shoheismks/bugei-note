@@ -25,10 +25,10 @@ function HomeCombatCard({
     (safeLevelData.currentXp / safeLevelData.nextXp) * 100;
 
   return (
-    <section className="card">
-      <h2>今日の戦闘力</h2>
+    <section className="card product-card combat-card">
+      <p className="metric-label">COMBAT POWER</p>
 
-      <div className="big-rank">{safeCombatPower.total}</div>
+      <div className="big-rank metric-value">{safeCombatPower.total}</div>
 
       <h4>筋力 {safeCombatPower.strength}</h4>
       <div className="xp-bar">
@@ -81,29 +81,24 @@ function HomeCombatCard({
 
       <hr />
 
-      <h2>館主レベル</h2>
+      <div className="level-panel">
+        <p className="metric-label">WARRIOR</p>
 
-      <div className="big-rank">
-        Lv.{safeLevelData.level}
+        <div className="big-rank level-value">
+          Lv.{safeLevelData.level}
+        </div>
+
+        <div className="xp-bar">
+          <div
+            className="xp-fill"
+            style={{ width: `${levelPercent}%` }}
+          />
+        </div>
+
+        <p>次のレベルまで：{safeLevelData.remaining}</p>
+
+        <p className="class-label">{playerClass}</p>
       </div>
-
-      <div className="xp-bar">
-        <div
-          className="xp-fill"
-          style={{ width: `${levelPercent}%` }}
-        />
-      </div>
-
-      <p>次のレベルまで：{safeLevelData.remaining}</p>
-
-      <p
-        style={{
-          fontSize: "1.2rem",
-          fontWeight: "bold",
-        }}
-      >
-        {playerClass}
-      </p>
     </section>
   );
 }

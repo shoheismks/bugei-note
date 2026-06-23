@@ -248,6 +248,11 @@ function App() {
     resetTechniques();
   };
 
+  const handleLogout = async () => {
+    await supabase.auth.signOut();
+    window.location.reload();
+  };
+
   const handlePartChange = (part) => {
     setTrainingPart(part);
     setExercise(exercisesByPart[part][0]);
@@ -395,21 +400,10 @@ if (!session) {
   saveNote={saveNote}
   profile={profile}
   saveProfile={saveProfile}
+  handleLogout={handleLogout}
 
   
 />
-
-      <section className="card logout-card">
-        <button
-          className="danger"
-          onClick={async () => {
-            await supabase.auth.signOut();
-            window.location.reload();
-          }}
-        >
-          ログアウト
-        </button>
-      </section>
 
 </div>
 );

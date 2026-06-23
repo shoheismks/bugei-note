@@ -12,10 +12,10 @@ function HomeMissionCard({
   };
 
   return (
-    <section className="card">
-      <h2>本日のおすすめ任務</h2>
+    <section className="card product-card mission-card">
+      <p className="metric-label">MISSION</p>
 
-      <div className="big-rank">
+      <div className="big-rank mission-title-main">
         {safeRecommendedMission.title}
       </div>
 
