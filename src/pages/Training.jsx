@@ -1,6 +1,7 @@
 import { useState } from "react";
 import { parts, exercisesByPart, timeBasedExercises } from "../data";
 import { scoreToRank, scoreToSamuraiTitle } from "../rank";
+import { Dumbbell, Trash2 } from "lucide-react";
 
 function Training({
   trainingPart,
@@ -59,9 +60,51 @@ function Training({
     setCustomExercise("");
   };
 
+  const today = new Date().toDateString();
+  const isToday = (date) => new Date(date).toDateString() === today;
+  const todayRecords = trainingRecords.filter((record) => isToday(record.date));
+  const todayXp = todayRecords.reduce(
+    (sum, record) => sum + Number(record.xp || 0),
+    0
+  );
+  const latestRecord = trainingRecords[trainingRecords.length - 1];
+
+  const formatTrainingSet = (record) => {
+    const isSimple =
+      timeBasedExercises.includes(record.exercise) ||
+      record.rule === "自由入力：有酸素" ||
+      record.rule === "自由入力：時間" ||
+      record.rule === "自由入力：回数" ||
+      record.rule === "自由入力：武道補強";
+
+    if (isSimple) return `${record.reps}`;
+
+    return `${record.weight}kg × ${record.reps}回 × ${
+      record.sets || "-"
+    }セット`;
+  };
+
   return (
     <main>
-      <section className="card">
+      <section className="card product-card training-status-card">
+        <p className="metric-label">TRAINING LOG</p>
+        <div className="training-status-grid">
+          <div>
+            <span>今日の稽古数</span>
+            <strong>{todayRecords.length}</strong>
+          </div>
+          <div>
+            <span>今日の獲得XP</span>
+            <strong>{todayXp}</strong>
+          </div>
+          <div>
+            <span>最新種目</span>
+            <strong>{latestRecord?.exercise || "-"}</strong>
+          </div>
+        </div>
+      </section>
+
+      <section className="card training-form-card">
         <h2>稽古記録</h2>
 
         {lastXp && (
@@ -88,81 +131,113 @@ function Training({
           </div>
         )}
 
-        <select
-          value={trainingPart}
-          onChange={(e) => handlePartChange(e.target.value)}
-        >
-          {parts.map((part) => (
-            <option key={part}>{part}</option>
-          ))}
-        </select>
+        <div className="training-form-grid">
+          <label>
+            <span>部位</span>
+            <select
+              value={trainingPart}
+              onChange={(e) => handlePartChange(e.target.value)}
+            >
+              {parts.map((part) => (
+                <option key={part}>{part}</option>
+              ))}
+            </select>
+          </label>
 
-        <select
-          value={exercise}
-          onChange={(e) => setExercise(e.target.value)}
-        >
-          {exercisesByPart[trainingPart].map((item) => (
-            <option key={item}>{item}</option>
-          ))}
-          <option value="自由入力">自由入力</option>
-        </select>
+          <label>
+            <span>種目</span>
+            <select
+              value={exercise}
+              onChange={(e) => setExercise(e.target.value)}
+            >
+              {exercisesByPart[trainingPart].map((item) => (
+                <option key={item}>{item}</option>
+              ))}
+              <option value="自由入力">自由入力</option>
+            </select>
+          </label>
+        </div>
 
         {isCustom && (
-          <>
+          <div className="training-form-grid">
+            <label>
+              <span>自由種目名</span>
+              <input
+                type="text"
+                placeholder="例：坂道走、薪割り、石担ぎ"
+                value={customExercise}
+                onChange={(e) => setCustomExercise(e.target.value)}
+              />
+            </label>
+
+            <label>
+              <span>種目タイプ</span>
+              <select
+                value={customType}
+                onChange={(e) => setCustomType(e.target.value)}
+              >
+                <option value="strength">筋力</option>
+                <option value="cardio">有酸素</option>
+                <option value="budo">武道補強</option>
+                <option value="time">時間</option>
+                <option value="reps">回数</option>
+              </select>
+            </label>
+          </div>
+        )}
+
+        <div className="training-form-grid compact">
+          {!isTimeBased && (
+            <label>
+              <span>{isDumbbell ? "片手重量" : "重量"}</span>
+              <input
+                type="number"
+                placeholder="kg"
+                value={trainingWeight}
+                onChange={(e) => setTrainingWeight(e.target.value)}
+              />
+            </label>
+          )}
+
+          <label>
+            <span>
+              {isTimeBased || customType === "time" || customType === "cardio"
+                ? "時間・回数"
+                : "回数"}
+            </span>
             <input
-              type="text"
-              placeholder="自由種目名 例：石担ぎ、薪割り、坂道走"
-              value={customExercise}
-              onChange={(e) => setCustomExercise(e.target.value)}
+              type="number"
+              placeholder={
+                isTimeBased || customType === "time" || customType === "cardio"
+                  ? "例：60"
+                  : "例：10"
+              }
+              value={reps}
+              onChange={(e) => setReps(e.target.value)}
             />
+          </label>
 
-            <select
-              value={customType}
-              onChange={(e) => setCustomType(e.target.value)}
-            >
-              <option value="strength">筋力</option>
-              <option value="cardio">有酸素</option>
-              <option value="budo">武道補強</option>
-              <option value="time">時間</option>
-              <option value="reps">回数</option>
-            </select>
-          </>
-        )}
+          {!isTimeBased && customType !== "time" && customType !== "cardio" && (
+            <label>
+              <span>セット</span>
+              <input
+                type="number"
+                placeholder="例：3"
+                value={sets}
+                onChange={(e) => setSets(e.target.value)}
+              />
+            </label>
+          )}
+        </div>
 
-        {!isTimeBased && (
+        <label className="date-field">
+          <span>日付</span>
           <input
-            type="number"
-            placeholder={isDumbbell ? "片手重量 kg" : "重量 kg"}
-            value={trainingWeight}
-            onChange={(e) => setTrainingWeight(e.target.value)}
+            type="date"
+            value={trainingDate}
+            onChange={(e) => setTrainingDate(e.target.value)}
           />
-        )}
-
-        <input
-          type="number"
-          placeholder={
-            isTimeBased || customType === "time" || customType === "cardio"
-              ? "時間・回数・秒数"
-              : "回数"
-          }
-          value={reps}
-          onChange={(e) => setReps(e.target.value)}
-        />
-
-        {!isTimeBased && customType !== "time" && customType !== "cardio" && (
-          <input
-            type="number"
-            placeholder="セット数"
-            value={sets}
-            onChange={(e) => setSets(e.target.value)}
-          />
-        )}
-
-        <input
-          type="date"
-          value={trainingDate}
-          onChange={(e) => setTrainingDate(e.target.value)}
-        />
+        </label>
 
         <p className="hint">
           {isCustom && "自由種目はタイプに応じてXP計算します"}
@@ -174,7 +249,8 @@ function Training({
             "マシン・バーベルは表示重量で入力"}
         </p>
 
-        <button className="primary" onClick={handleSave}>
+        <button className="primary training-save-button" onClick={handleSave}>
+          <Dumbbell aria-hidden="true" size={18} />
           稽古記録を保存
         </button>
       </section>
@@ -185,35 +261,36 @@ function Training({
         </section>
       )}
 
-      {trainingRecords.map((record, index) => (
-        <section className="card" key={index}>
-          <p>{new Date(record.date).toLocaleString()}</p>
+      {trainingRecords.length > 0 && (
+        <section className="card training-history-list">
+          <h2>履歴</h2>
 
-          <p>
-            {record.part}：{record.exercise}
-          </p>
+          {trainingRecords.map((record, index) => (
+            <div className="training-history-item" key={index}>
+              <div>
+                <p className="history-date">
+                  {new Date(record.date).toLocaleString()}
+                </p>
+                <h3>{record.exercise}</h3>
+                <p className="history-volume">{formatTrainingSet(record)}</p>
+              </div>
 
-          <p>
-            {timeBasedExercises.includes(record.exercise) ||
-            record.rule === "自由入力：有酸素" ||
-            record.rule === "自由入力：時間" ||
-            record.rule === "自由入力：回数" ||
-            record.rule === "自由入力：武道補強"
-              ? `${record.reps}`
-              : `${record.weight}kg × ${record.reps}回 × ${
-                  record.sets || "-"
-                }セット`}
-          </p>
+              <div className="history-score">
+                <strong>+{record.xp || 0}XP</strong>
+                <span>推定スコア：{getRecordScore(record).toFixed(1)}</span>
+              </div>
 
-          <p>入力ルール：{record.rule}</p>
-          <p>推定スコア：{getRecordScore(record).toFixed(1)}</p>
-          <p>獲得XP：+{record.xp || 0}XP</p>
-
-          <button onClick={() => deleteTrainingRecord(index)}>
-            削除
-          </button>
+              <button
+                className="icon-outline-button"
+                onClick={() => deleteTrainingRecord(index)}
+                aria-label={`${record.exercise}を削除`}
+              >
+                <Trash2 aria-hidden="true" size={16} />
+              </button>
+            </div>
+          ))}
         </section>
-      ))}
+      )}
     </main>
   );
 }

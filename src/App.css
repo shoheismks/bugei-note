@@ -619,6 +619,152 @@ main main {
   color: var(--muted);
 }
 
+.training-status-card {
+  padding: 24px;
+}
+
+.training-status-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 10px;
+  margin-top: 14px;
+}
+
+.training-status-grid div {
+  padding: 14px 10px;
+  border: 1px solid rgba(148, 163, 184, 0.16);
+  border-radius: var(--radius-sm);
+  background: rgba(15, 23, 42, 0.48);
+}
+
+.training-status-grid span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 760;
+}
+
+.training-status-grid strong {
+  display: block;
+  margin-top: 6px;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(22px, 6vw, 34px);
+  font-weight: 880;
+  line-height: 1.05;
+  overflow-wrap: anywhere;
+}
+
+.training-form-card {
+  padding: 22px;
+}
+
+.training-form-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 12px;
+  margin-bottom: 12px;
+}
+
+.training-form-grid.compact {
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+}
+
+.training-form-card label,
+.date-field {
+  display: grid;
+  gap: 6px;
+  min-width: 0;
+}
+
+.training-form-card label span,
+.date-field span {
+  color: var(--muted);
+  font-size: 13px;
+  font-weight: 760;
+}
+
+.training-form-card input,
+.training-form-card select {
+  margin-bottom: 0;
+}
+
+.training-save-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+}
+
+.training-history-list {
+  display: grid;
+  gap: 10px;
+}
+
+.training-history-item {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  gap: 10px;
+  align-items: center;
+  padding: 14px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: var(--radius-sm);
+  background: rgba(15, 23, 42, 0.48);
+}
+
+.training-history-item h3 {
+  margin: 2px 0 4px;
+  font-size: clamp(18px, 5vw, 23px);
+}
+
+.history-date,
+.history-volume,
+.history-score span {
+  margin: 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.history-volume {
+  color: #cbd5e1;
+  font-weight: 700;
+}
+
+.history-score {
+  display: grid;
+  gap: 3px;
+  justify-items: end;
+  text-align: right;
+}
+
+.history-score strong {
+  color: var(--accent-2);
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 850;
+}
+
+.icon-outline-button {
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: auto;
+  min-width: 42px;
+  min-height: 36px;
+  padding: 8px 12px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  border-radius: var(--radius-sm);
+  background: transparent;
+  color: var(--muted);
+}
+
+.icon-outline-button:hover {
+  border-color: rgba(147, 197, 253, 0.45);
+  background: rgba(30, 41, 59, 0.72);
+  color: var(--text);
+}
+
 .dev-field {
   margin: 12px 0;
   padding: 12px;
@@ -1382,6 +1528,29 @@ span {
   .home-main .chart-box {
     height: 240px;
     min-height: 215px;
+  }
+
+  .training-form-grid,
+  .training-form-grid.compact {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  .training-status-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 8px;
+  }
+
+  .training-status-grid div {
+    padding: 12px 8px;
+  }
+
+  .training-history-item {
+    grid-template-columns: 1fr;
+  }
+
+  .history-score {
+    justify-items: start;
+    text-align: left;
   }
 
   .report-score-ring {
