@@ -50,13 +50,14 @@ function SettingsPage({
   const power = combatPower?.total || 0;
 
   return (
-    <main>
-      <section className="card hero">
-        <h2>設定</h2>
-        <p className="beta-label">SHU・HA・RI β</p>
+    <main className="settings-main">
+      <section className="card hero settings-hero-card">
+        <p className="metric-label">SETTINGS</p>
+        <h2>Profile & Account</h2>
         <p className="hint">
           SHU・HA・RIのプロフィールとアカウントを管理します。
         </p>
+        <p className="beta-label">SHU・HA・RI β</p>
       </section>
 
       <SegmentedTabs
@@ -88,53 +89,65 @@ function SettingsPage({
             </div>
           </section>
 
-          <section className="card profile-settings-card">
-            <h3>性別</h3>
-            <select value={gender} onChange={(e) => saveGender(e.target.value)}>
-              <option value="male">男性</option>
-              <option value="female">女性</option>
-            </select>
+          <section className="card profile-settings-card settings-list-card">
+            <div className="settings-list-row">
+              <label>性別</label>
+              <select value={gender} onChange={(e) => saveGender(e.target.value)}>
+                <option value="male">男性</option>
+                <option value="female">女性</option>
+              </select>
+            </div>
 
-            <h3>現在の称号</h3>
-            <select
-              value={selectedTitle}
-              onChange={(e) => {
-                changeTitle(e.target.value);
-                update("title", e.target.value);
-              }}
-            >
-              {selectableTitles.map((title) => (
-                <option key={title.id} value={title.name}>
-                  {title.name}
-                </option>
-              ))}
-            </select>
+            <div className="settings-list-row">
+              <label>称号</label>
+              <select
+                value={selectedTitle}
+                onChange={(e) => {
+                  changeTitle(e.target.value);
+                  update("title", e.target.value);
+                }}
+              >
+                {selectableTitles.map((title) => (
+                  <option key={title.id} value={title.name}>
+                    {title.name}
+                  </option>
+                ))}
+              </select>
+            </div>
 
-            <h3>館主名（ユーザー名）</h3>
-            <input
-              type="text"
-              value={draft.dojo_name}
-              onChange={(e) => update("dojo_name", e.target.value)}
-              placeholder="例：山田太郎"
-            />
+            <div className="settings-list-row">
+              <label>館主名</label>
+              <input
+                type="text"
+                value={draft.dojo_name}
+                onChange={(e) => update("dojo_name", e.target.value)}
+                placeholder="例：山田太郎"
+              />
+            </div>
 
-            <h3>体重階級</h3>
-            <p className="profile-readonly">{weightClass || "-"}</p>
+            <div className="settings-list-row">
+              <label>体重階級</label>
+              <p className="profile-readonly">{weightClass || "-"}</p>
+            </div>
 
-            <h3>流派（将来用）</h3>
-            <input
-              type="text"
-              value={draft.martial_style}
-              onChange={(e) => update("martial_style", e.target.value)}
-              placeholder="例：居合 / 剣術 / 柔術"
-            />
+            <div className="settings-list-row">
+              <label>流派</label>
+              <input
+                type="text"
+                value={draft.martial_style}
+                onChange={(e) => update("martial_style", e.target.value)}
+                placeholder="将来用"
+              />
+            </div>
 
-            <h3>自己紹介（将来用）</h3>
-            <textarea
-              value={draft.bio}
-              onChange={(e) => update("bio", e.target.value)}
-              placeholder="稽古で大切にしていること、今伸ばしたい力、日々の目標など"
-            />
+            <div className="settings-list-row stacked">
+              <label>自己紹介</label>
+              <textarea
+                value={draft.bio}
+                onChange={(e) => update("bio", e.target.value)}
+                placeholder="稽古で大切にしていること、今伸ばしたい力、日々の目標など"
+              />
+            </div>
 
             <details className="dev-field">
               <summary>開発用</summary>
@@ -156,9 +169,10 @@ function SettingsPage({
 
       {settingsTab === "data" && (
         <section className="card settings-panel">
-          <h3>データ管理（将来用）</h3>
+          <p className="metric-label">DATA</p>
+          <h3>データ管理</h3>
           <p className="hint">
-            エクスポート、復元、同期などの管理機能をここに集約予定です。
+            エクスポート・復元は今後対応予定です。
           </p>
         </section>
       )}
