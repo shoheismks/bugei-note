@@ -1,3 +1,5 @@
+import { Activity } from "lucide-react";
+
 function StepStatsCard({ stepRecords }) {
   const records = stepRecords || [];
 
@@ -24,16 +26,33 @@ function StepStatsCard({ stepRecords }) {
       : 0;
 
   return (
-    <section className="card">
-      <h2>歩数統計</h2>
+    <section className="card step-stats-card">
+      <div className="step-section-heading">
+        <div>
+          <p className="metric-label">STEPS</p>
+          <h2>Activity</h2>
+        </div>
+        <Activity aria-hidden="true" size={22} />
+      </div>
 
-      <p>今日：{todaySteps.toLocaleString()}歩</p>
-
-      <p>自己記録：{bestSteps.toLocaleString()}歩</p>
-
-      <p>平均：{averageSteps.toLocaleString()}歩</p>
-
-      <p>累計：{totalSteps.toLocaleString()}歩</p>
+      <div className="step-stats-grid">
+        <div>
+          <span>今日の歩数</span>
+          <strong>{todaySteps.toLocaleString()}</strong>
+        </div>
+        <div>
+          <span>平均</span>
+          <strong>{averageSteps.toLocaleString()}</strong>
+        </div>
+        <div>
+          <span>累計</span>
+          <strong>{totalSteps.toLocaleString()}</strong>
+        </div>
+        <div>
+          <span>自己記録</span>
+          <strong>{bestSteps.toLocaleString()}</strong>
+        </div>
+      </div>
     </section>
   );
 }
