@@ -40,6 +40,7 @@ import Header from "./components/Header";
 import Navigation from "./components/Navigation";
 import AchievementPopup from "./components/AchievementPopup";
 import Onboarding from "./components/Onboarding";
+import HelpSystem from "./components/HelpSystem";
 import Login from "./pages/Login";
 import { supabase } from "./lib/supabase";
 import AppRoutes from "./components/AppRoutes";
@@ -365,6 +366,8 @@ if (!session) {
       <Onboarding />
 
       <Navigation tab={tab} setTab={setTab} />
+
+      <HelpSystem />
 
       
 
