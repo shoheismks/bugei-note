@@ -2384,6 +2384,253 @@ button:focus-visible {
   color: var(--text);
 }
 
+.techniques-main {
+  padding-bottom: 132px;
+}
+
+.technique-hero-card,
+.technique-search-card,
+.technique-art-card,
+.technique-note-card {
+  border-color: rgba(96, 165, 250, 0.2);
+}
+
+.technique-hero-card {
+  text-align: left;
+}
+
+.technique-hero-heading,
+.technique-section-heading,
+.technique-list-heading {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.technique-section-heading {
+  justify-content: flex-start;
+  margin-bottom: 12px;
+}
+
+.technique-hero-heading svg,
+.technique-section-heading svg {
+  flex: 0 0 auto;
+  color: var(--accent-2);
+}
+
+.technique-hero-percent {
+  margin: 18px 0 12px;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(64px, 20vw, 104px);
+  font-weight: 900;
+  line-height: 0.9;
+  font-variant-numeric: tabular-nums;
+}
+
+.technique-hero-stats,
+.technique-art-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.technique-hero-stats div,
+.technique-art-tile {
+  min-width: 0;
+  padding: 12px;
+  border: 1px solid rgba(148, 163, 184, 0.15);
+  border-radius: var(--radius-sm);
+  background: rgba(15, 23, 42, 0.5);
+}
+
+.technique-hero-stats span,
+.technique-art-tile span {
+  display: block;
+  color: var(--muted);
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.technique-hero-stats strong,
+.technique-art-tile strong {
+  display: block;
+  margin-top: 5px;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(22px, 6.6vw, 34px);
+  font-weight: 880;
+  line-height: 1;
+}
+
+.technique-progress-bar,
+.technique-mini-bar {
+  overflow: hidden;
+  border: 1px solid rgba(148, 163, 184, 0.2);
+  border-radius: 999px;
+  background: rgba(15, 23, 42, 0.72);
+}
+
+.technique-progress-bar {
+  height: 12px;
+  margin-top: 14px;
+}
+
+.technique-progress-bar.small {
+  height: 9px;
+  margin: 10px 0;
+}
+
+.technique-progress-bar span,
+.technique-mini-bar span {
+  display: block;
+  height: 100%;
+  border-radius: inherit;
+  background: linear-gradient(90deg, var(--accent), #38bdf8);
+}
+
+.technique-search-card {
+  padding: 16px;
+}
+
+.technique-search-card input {
+  margin-bottom: 0;
+}
+
+.technique-art-card {
+  display: grid;
+  gap: 12px;
+}
+
+.technique-art-tile {
+  display: grid;
+  gap: 8px;
+}
+
+.technique-art-tile div {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 8px;
+}
+
+.technique-art-tile small {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
+.technique-mini-bar {
+  height: 7px;
+}
+
+.technique-list-heading h2 {
+  margin: 0;
+}
+
+.technique-list-heading span {
+  color: var(--accent-2);
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 880;
+}
+
+.technique-list {
+  display: grid;
+  gap: 8px;
+}
+
+.technique-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 8px 10px;
+  align-items: center;
+  padding: 11px;
+  border: 1px solid rgba(148, 163, 184, 0.14);
+  border-radius: var(--radius-sm);
+  background: rgba(15, 23, 42, 0.48);
+}
+
+.technique-row.is-selected {
+  border-color: rgba(96, 165, 250, 0.5);
+  box-shadow: 0 0 0 1px rgba(59, 130, 246, 0.2) inset;
+}
+
+.technique-name-button {
+  min-width: 0;
+  min-height: auto;
+  padding: 0;
+  border: 0;
+  background: transparent;
+  color: var(--text);
+  font-family: var(--font-display);
+  font-size: clamp(16px, 4.5vw, 20px);
+  font-weight: 820;
+  text-align: left;
+}
+
+.technique-level-label {
+  justify-self: end;
+  color: #bfdbfe;
+  font-size: 12px;
+  font-weight: 800;
+  white-space: nowrap;
+}
+
+.technique-row .technique-mini-bar {
+  grid-column: 1;
+}
+
+.technique-level-button {
+  grid-column: 2;
+  grid-row: 2;
+  justify-self: end;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 4px;
+  width: auto;
+  min-width: 70px;
+  min-height: 34px;
+  padding: 7px 10px;
+  border: 1px solid rgba(96, 165, 250, 0.28);
+  border-radius: var(--radius-sm);
+  background: rgba(59, 130, 246, 0.12);
+  color: #bfdbfe;
+  font-family: var(--font-display);
+  font-size: 12px;
+  font-weight: 850;
+}
+
+.technique-level-button:hover,
+.technique-level-button:focus-visible {
+  border-color: rgba(147, 197, 253, 0.5);
+  background: rgba(59, 130, 246, 0.2);
+  color: var(--text);
+}
+
+.technique-note-card {
+  display: grid;
+  gap: 10px;
+}
+
+.technique-note-card textarea {
+  min-height: 74px;
+  margin: 0;
+}
+
+.technique-note-card .primary {
+  margin-top: 4px;
+}
+
+.technique-note-card button:not(.primary) {
+  min-height: 40px;
+  border: 1px solid rgba(148, 163, 184, 0.24);
+  background: transparent;
+  color: var(--muted);
+}
+
 .achievement-popup {
   position: fixed;
   inset: 0;

@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { BookOpen, Library, Plus, Search } from "lucide-react";
 import { techniques } from "../data/techniques";
 
 const levelLabels = [
@@ -126,66 +127,64 @@ function Techniques({
   };
 
   return (
-    <main>
-      <section className="card hero">
-        <h2>武芸図鑑</h2>
-
-        <div className="big-rank">{learnedPercent}%</div>
-
-        <p>
-          習得技：{learnedCount}/{techniques.length}
-        </p>
-
-        <p>教えられる技：{masteredCount}</p>
-
-        <div className="xp-bar">
-          <div
-            className="xp-fill"
-            style={{ width: `${learnedPercent}%` }}
-          />
+    <main className="techniques-main">
+      <section className="card hero technique-hero-card">
+        <div className="technique-hero-heading">
+          <div>
+            <p className="metric-label">SKILL LIBRARY</p>
+            <h2>Skill Map</h2>
+          </div>
+          <Library aria-hidden="true" size={24} />
         </div>
 
+        <div className="technique-hero-percent">{learnedPercent}%</div>
+
+        <div className="technique-hero-stats">
+          <div>
+            <span>習得技</span>
+            <strong>{learnedCount} / {techniques.length}</strong>
+          </div>
+          <div>
+            <span>教えられる技</span>
+            <strong>{masteredCount}</strong>
+          </div>
+        </div>
+
+        <div className="technique-progress-bar">
+          <span style={{ width: `${learnedPercent}%` }} />
+        </div>
+      </section>
+
+      <section className="card technique-search-card">
+        <div className="technique-section-heading">
+          <Search aria-hidden="true" size={20} />
+          <p className="metric-label">SEARCH</p>
+        </div>
         <input
           type="text"
-          placeholder="技名・メモ検索"
+          placeholder="技名・メモを検索"
           value={searchWord}
           onChange={(e) => setSearchWord(e.target.value)}
         />
-
-        <p className="hint">
-          技名を押すとメモ、習熟度ボタンでレベル変更。
-        </p>
       </section>
 
-      <section className="card">
+      <section className="card technique-art-card">
         <h2>流派進捗</h2>
 
+        <div className="technique-art-grid">
         {artProgressList.map((art) => (
-          <div key={art.name} className="rank-card">
-            <h3>
-              {art.percent >= 100
-                ? `${art.name}皆伝`
-                : art.percent >= 80
-                ? `${art.name}研究家`
-                : art.name}
-            </h3>
-
-            <p>
-              習得率：{art.percent}% / {art.count}技
-            </p>
-
-            <p>
-              教えられる技：{art.mastered}
-            </p>
-
-            <div className="xp-bar">
-              <div
-                className="xp-fill"
-                style={{ width: `${art.percent}%` }}
-              />
+          <div key={art.name} className="technique-art-tile">
+            <div>
+              <span>{art.name}</span>
+              <strong>{art.percent}%</strong>
+            </div>
+            <small>教えられる技 {art.mastered} / {art.count}</small>
+            <div className="technique-mini-bar">
+              <span style={{ width: `${art.percent}%` }} />
             </div>
           </div>
         ))}
+        </div>
       </section>
 
       {Object.entries(groups).map(([art, artTechniques]) => {
@@ -200,65 +199,68 @@ function Techniques({
 
         return (
           <section className="card" key={art}>
-            <h2>
-              {art} {artPercent}%
-            </h2>
+            <div className="technique-list-heading">
+              <h2>{art}</h2>
+              <span>{artPercent}%</span>
+            </div>
 
-            <div className="xp-bar">
-              <div
-                className="xp-fill"
-                style={{ width: `${artPercent}%` }}
-              />
+            <div className="technique-progress-bar small">
+              <span style={{ width: `${artPercent}%` }} />
             </div>
 
             <p className="hint">
               {filteredTechniques.length}/{artTechniques.length}技 表示中
             </p>
 
+            <div className="technique-list">
             {filteredTechniques.map((technique) => {
               const level = getTechniqueLevel(technique.id);
 
               return (
                 <div
                   key={technique.id}
-                  style={{
-                    padding: "10px 0",
-                    borderBottom: "1px solid #333",
-                  }}
+                  className={`technique-row ${
+                    selectedTechnique?.id === technique.id ? "is-selected" : ""
+                  }`}
                 >
-                  <strong
+                  <button
+                    className="technique-name-button"
                     onClick={() => setSelectedTechnique(technique)}
-                    style={{ cursor: "pointer" }}
                   >
                     {technique.name}
-                  </strong>
+                  </button>
 
-                  <p>レベル：{levelLabels[level]}</p>
+                  <span className="technique-level-label">{levelLabels[level]}</span>
 
-                  <div className="xp-bar">
-                    <div
-                      className="xp-fill"
-                      style={{
-                        width: `${(level / 3) * 100}%`,
-                      }}
-                    />
+                  <div className="technique-mini-bar">
+                    <span style={{ width: `${(level / 3) * 100}%` }} />
                   </div>
 
-                  <button onClick={() => changeLevel(technique.id)}>
-                    習熟度を上げる
+                  <button
+                    className="technique-level-button"
+                    onClick={() => changeLevel(technique.id)}
+                    aria-label={`${technique.name}の習熟度を上げる`}
+                  >
+                    <Plus aria-hidden="true" size={16} />
+                    Lv UP
                   </button>
                 </div>
               );
             })}
+            </div>
           </section>
         );
       })}
 
       {selectedTechnique && (
-        <section className="card">
-          <h2>{selectedTechnique.name}</h2>
-
-          <p>流派：{selectedTechnique.art}</p>
+        <section className="card technique-note-card">
+          <div className="technique-section-heading">
+            <BookOpen aria-hidden="true" size={20} />
+            <div>
+              <p className="metric-label">{selectedTechnique.art}</p>
+              <h2>{selectedTechnique.name}</h2>
+            </div>
+          </div>
 
           <textarea
             placeholder="ポイント"
