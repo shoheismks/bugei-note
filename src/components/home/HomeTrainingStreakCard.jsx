@@ -1,6 +1,6 @@
 import { Flame } from "lucide-react";
 
-function HomeCalendarCard({
+function HomeTrainingStreakCard({
   trainingRecords,
   martialRecords,
   stepRecords,
@@ -81,11 +81,9 @@ function HomeCalendarCard({
         ))}
       </div>
 
-      <p className="hint">
-        過去30日の鍛錬状況
-      </p>
+      <p className="hint">過去30日の鍛錬状況</p>
     </section>
   );
 }
 
-export default HomeCalendarCard;
+export default HomeTrainingStreakCard;

@@ -3,7 +3,7 @@ import HomeCombatCard from "../components/home/HomeCombatCard";
 import HomeRankCard from "../components/home/HomeRankCard";
 import HomeProfileCard from "../components/home/HomeProfileCard";
 import HomeBodyCard from "../components/home/HomeBodyCard";
-import HomeCalendarCard from "../components/home/HomeCalendarCard";
+import HomeTrainingStreakCard from "../components/home/HomeTrainingStreakCard";
 import HomeStatusRadar from "../components/home/HomeStatusRadar";
 import HomeQuestCard from "../components/home/HomeQuestCard";
 import { BookOpen, Dumbbell, Footprints, Scale } from "lucide-react";
@@ -99,7 +99,7 @@ function Home({
         recommendedMission={recommendedMission}
       />
 
-      <HomeCalendarCard
+      <HomeTrainingStreakCard
         trainingRecords={trainingRecords}
         martialRecords={martialRecords}
         stepRecords={stepRecords}
