@@ -3,7 +3,6 @@ import HomeCombatCard from "../components/home/HomeCombatCard";
 import HomeRankCard from "../components/home/HomeRankCard";
 import HomeProfileCard from "../components/home/HomeProfileCard";
 import HomeBodyCard from "../components/home/HomeBodyCard";
-import HomeStreakCard from "../components/home/HomeStreakCard";
 import HomeCalendarCard from "../components/home/HomeCalendarCard";
 import HomeStatusRadar from "../components/home/HomeStatusRadar";
 import HomeQuestCard from "../components/home/HomeQuestCard";
@@ -18,7 +17,6 @@ function Home({
   trainingRecords,
   journalRecords,
   bodyRecords,
-  trainingStreak,
   combatPower,
   levelData,
   playerClass,
@@ -104,6 +102,7 @@ function Home({
       <HomeCalendarCard
         trainingRecords={trainingRecords}
         martialRecords={martialRecords}
+        stepRecords={stepRecords}
         journalRecords={journalRecords}
         bodyRecords={bodyRecords}
       />
@@ -115,8 +114,6 @@ function Home({
       />
 
       <HomeStatusRadar combatPower={combatPower} />
-
-      <HomeStreakCard trainingStreak={trainingStreak} />
 
       <HomeRankCard
         overallScore={overallScore}

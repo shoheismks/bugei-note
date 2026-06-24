@@ -1,62 +1,88 @@
+import { Flame } from "lucide-react";
+
 function HomeCalendarCard({
   trainingRecords,
   martialRecords,
+  stepRecords,
   journalRecords,
   bodyRecords,
 }) {
   const days = [];
+
+  const hasRecordOn = (records, key) => {
+    return (records || []).some(
+      (record) => new Date(record.date).toDateString() === key
+    );
+  };
+
+  const getDayCount = (key) => {
+    const hasPractice =
+      hasRecordOn(trainingRecords, key) || hasRecordOn(martialRecords, key);
+    const hasSteps = hasRecordOn(stepRecords, key);
+    const hasBody = hasRecordOn(bodyRecords, key);
+    const hasJournal = hasRecordOn(journalRecords, key);
+
+    return [hasPractice, hasSteps, hasBody, hasJournal].filter(Boolean).length;
+  };
 
   for (let i = 29; i >= 0; i--) {
     const d = new Date();
     d.setDate(d.getDate() - i);
 
     const key = d.toDateString();
+    days.push({
+      key,
+      count: getDayCount(key),
+      label: d.toLocaleDateString("ja-JP", {
+        month: "numeric",
+        day: "numeric",
+      }),
+    });
+  }
 
-    const hasActivity =
-      trainingRecords.some(
-        (r) => new Date(r.date).toDateString() === key
-      ) ||
-      martialRecords.some(
-        (r) => new Date(r.date).toDateString() === key
-      ) ||
-      journalRecords.some(
-        (r) => new Date(r.date).toDateString() === key
-      ) ||
-      bodyRecords.some(
-        (r) => new Date(r.date).toDateString() === key
-      );
+  const activeDaySet = new Set(
+    [
+      ...(trainingRecords || []),
+      ...(martialRecords || []),
+      ...(stepRecords || []),
+      ...(bodyRecords || []),
+      ...(journalRecords || []),
+    ]
+      .filter((record) => record.date)
+      .map((record) => new Date(record.date).toDateString())
+  );
 
-    days.push(hasActivity);
+  let streak = 0;
+  for (let i = 0; i < 365; i++) {
+    const d = new Date();
+    d.setDate(d.getDate() - i);
+
+    if (!activeDaySet.has(d.toDateString())) break;
+    streak += 1;
   }
 
   return (
-    <section className="card">
-      <h2>館主カレンダー</h2>
+    <section className="card training-streak-card">
+      <div className="training-streak-heading">
+        <div>
+          <p className="metric-label">TRAINING STREAK</p>
+          <h2>{streak} DAYS</h2>
+        </div>
+        <Flame aria-hidden="true" size={24} />
+      </div>
 
-      <div
-        style={{
-          display: "grid",
-          gridTemplateColumns: "repeat(7, 1fr)",
-          gap: "4px",
-        }}
-      >
-        {days.map((active, index) => (
+      <div className="training-heatmap">
+        {days.map((day) => (
           <div
-            key={index}
-            style={{
-              width: "100%",
-              aspectRatio: "1",
-              borderRadius: "4px",
-              backgroundColor: active
-                ? "#22c55e"
-                : "#e5e7eb",
-            }}
+            className={`heatmap-cell level-${Math.min(day.count, 3)}`}
+            key={day.key}
+            title={`${day.label}: ${day.count}件`}
           />
         ))}
       </div>
 
       <p className="hint">
-        過去30日の活動履歴
+        過去30日の鍛錬状況
       </p>
     </section>
   );
