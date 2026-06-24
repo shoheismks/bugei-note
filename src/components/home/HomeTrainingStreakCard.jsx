@@ -67,6 +67,7 @@ function HomeTrainingStreakCard({
         <div>
           <p className="metric-label">TRAINING STREAK</p>
           <h2>{streak} DAYS</h2>
+          <p className="hint">稽古・歩数・身体記録・日誌のいずれかを記録した日を集計。</p>
         </div>
         <Flame aria-hidden="true" size={24} />
       </div>
@@ -81,7 +82,11 @@ function HomeTrainingStreakCard({
         ))}
       </div>
 
-      <p className="hint">過去30日の鍛錬状況</p>
+      <div className="training-streak-footer">
+        <span>30 DAYS AGO</span>
+        <span>過去30日の鍛錬状況</span>
+        <span>TODAY</span>
+      </div>
     </section>
   );
 }
